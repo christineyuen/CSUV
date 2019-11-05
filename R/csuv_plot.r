@@ -165,15 +165,17 @@ csuv.plot.helper<-function(new.fit,
   plot.legend = plot.col = plot.lty = plot.lwd = plot.pt.bg = plot.pch = c()
   if(to.shade || with.thr){
     if(to.shade){
-      thr = sapply(c(9:1)/10, function(i) max(c(which(var.freq>= i), 0)))+0.5
+      thr = sapply(c(9:1)/10, function(i) max(c(which(var.freq> i), 0)))+0.5
       thr = c(0.5, thr, max(var.order))
       for(i in 1:10){
         # get shade color and legend val
         if(thr[i]!=thr[i+1]){
           rect.col = rgb(i/10,i/10,i/10, alpha=0.5)
           rect(xleft = thr[i], ybottom = ylim[2]+1, xright = thr[i+1], ytop = ylim[1]-1, border = NA, col = rect.col)
+          legend.idx = ifelse(i==10, paste0("[",(10-i)*10, ",", (11-i)*10, "]"),
+                              paste0("(",(10-i)*10, ",", (11-i)*10, "]"))
           legend.val = rbind(legend.val,
-                             c(idx = paste((10-i)/10, "-", (11-i)/10),
+                             c(idx = legend.idx,
                                col = rect.col))
         }
       }
