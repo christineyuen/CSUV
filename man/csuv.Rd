@@ -2,7 +2,7 @@
 % Please edit documentation in R/csuv.r
 \name{csuv}
 \alias{csuv}
-\title{Fit the Variable selection by combining method fits (CSUV) method}
+\title{Get the fitted results from Combined Selection and Uncertainty Visualiser (CSUV) method}
 \usage{
 csuv(X, Y, intercept, method.names = NULL, coef.est.method = lm.ols,
   B = 100, q = 0, fit.percent = 0.5, selection.criterion = "mse",
@@ -35,7 +35,7 @@ csuv(X, Y, intercept, method.names = NULL, coef.est.method = lm.ols,
 a list, which includes estimated coefficients (est.b), subsampling fitted models (mod.collection), number of times a method is selected (method.freq), relative frequency of each covariate (variable.freq), covariates ordered by relative frequency (variable.order).
 }
 \description{
-Fit the Variable selection by combining method fits (CSUV) method
+Get the fitted results from Combined Selection and Uncertainty Visualiser (CSUV) method
 }
 \examples{
 X = matrix(rnorm(1000), nrow = 100)

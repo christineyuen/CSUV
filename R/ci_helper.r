@@ -28,24 +28,26 @@ csuv.ci<-function(csuv.fit, level, type = "original"){
   if(type == "conditional"){
     m = nrow(mods)
     li = sapply(1:p, function(i){
-      num.non.zero = sum(!is.na(mods[,i]))
-      ci.margin = num.non.zero-(1-level)*m
-      if(ci.margin<=1){
-        return (0)
-      } else{
-        j = floor(ci.margin/2)
-        return (sort(mods[,i],partial=j)[j])
-      }
+      stats::quantile(mods[which(mods[,i]!=0),i], level/2, na.rm = TRUE)
+      # num.non.zero = sum(!is.na(mods[,i]))
+      # ci.margin = num.non.zero-(1-level)*m
+      # if(ci.margin<=1){
+      #   return (0)
+      # } else{
+      #   j = floor(ci.margin/2)
+      #   return (sort(mods[,i],partial=j)[j])
+      # }
     })
     ui = sapply(1:p, function(i){
-      num.non.zero = sum(!is.na(mods[,i]))
-      ci.margin = num.non.zero-(1-level)*m
-      if(ci.margin<=1){
-        return (0)
-      } else{
-        j = floor(ci.margin/2)
-        return (sort(mods[,i],decreasing = TRUE)[j])
-      }
+      stats::quantile(mods[which(mods[,i]!=0),i], 1-level/2, na.rm = TRUE)
+      # num.non.zero = sum(!is.na(mods[,i]))
+      # ci.margin = num.non.zero-(1-level)*m
+      # if(ci.margin<=1){
+      #   return (0)
+      # } else{
+      #   j = floor(ci.margin/2)
+      #   return (sort(mods[,i],decreasing = TRUE)[j])
+      # }
     })
   } else{
     li = sapply(1:p, function(i)
