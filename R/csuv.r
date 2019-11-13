@@ -178,7 +178,7 @@ get.csuv.final.mod<-function(X, Y, intercept, unique.fit,
   # get the final models
   csuv.s = csuv.thr.by.size(X, Y, intercept,
                           var.order = var.sel.freq.n.order$var.order,
-                          size.thr = stats::median(rowSums(sel.mods.n.sel.freq$sel.mod[-1,]!=0)),
+                          size.thr = stats::median(rowSums(sel.mods.n.sel.freq$sel.mod[-1,,drop=FALSE]!=0)),
                           coef.est.method)
 
   csuv.m = csuv.thr.by.freq(X, Y, intercept,
