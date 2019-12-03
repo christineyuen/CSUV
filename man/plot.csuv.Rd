@@ -4,15 +4,14 @@
 \alias{plot.csuv}
 \title{Graphical illustration of selection uncertainty}
 \usage{
-\method{plot}{csuv}(x, is.box.plot = TRUE, compare.method.fit = NULL,
-  cv.mod = NULL, with.thr = TRUE, to.shade = TRUE,
-  ci.type = "original", level = 0.1, ylim = NULL, xlim = NULL,
-  var.freq.thr = 0.05, return.lim = FALSE, ...)
+\method{plot}{csuv}(x, with.unconditional = FALSE,
+  compare.method.fit = NULL, cv.mod = NULL, with.thr = TRUE,
+  to.shade = TRUE, level = 0.1, var.freq.thr = 0.05, ...)
 }
 \arguments{
 \item{x}{fitted results from CSUV::csuv()}
 
-\item{is.box.plot}{TRUE to get a box plot like uncertainty illustration. FALSE to get a "confidence interval like" uncertainty illustration. Default is TRUE}
+\item{with.unconditional}{TRUE to get a unconditonal boxplot on the same graph. Default is FALSE}
 
 \item{compare.method.fit}{(optional) fitted results from CSUV::lm.compare.methods()}
 
@@ -22,19 +21,14 @@
 
 \item{to.shade}{whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE}
 
-\item{ci.type}{todo}
+\item{level}{the significant level of the whiskers. Default is 0.1}
 
-\item{level}{(only use when is.box.plot is FALSE) the significant level of the "confidence interval". Default is 0.1}
-
-\item{ylim}{range of y shown in the graph}
-
-\item{xlim}{range of x shown in the graph}
-
-\item{var.freq.thr}{minimim variable frequency to show}
-
-\item{return.lim}{TRUE to return the xlim and ylim}
+\item{var.freq.thr}{minimum variable frequency to show}
 
 \item{...}{additional argument for plot}
+}
+\value{
+a ggplot object
 }
 \description{
 Graphical illustration of selection uncertainty
