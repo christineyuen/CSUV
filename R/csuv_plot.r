@@ -158,7 +158,7 @@ csuv.plot.helper<-function(new.fit,
   # == add tau and selection frequency text ==
   p = p + ggplot2::geom_text(data = subset(ggplot.df, type == "tau"),
                              ggplot2::aes(y = y.min-1, label = coefficients)) +
-    ggplot2::geom_text(label = "tau", x = 0.75, y =y.min-1, parse = TRUE)
+    ggplot2::geom_text(label = "tau", x = 0, y =y.min-1, parse = TRUE)
 
   if(!is.null(compare.method.fit)){
     p = p + ggplot2::geom_text(data = subset(ggplot.df, type == "compare"),
