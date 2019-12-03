@@ -4,7 +4,7 @@
 csuv.env <- new.env()
 
 #' Print the coefficients of csuv
-#' @export print.csuv
+#' @export
 #' @param x output of csuv()
 #' @param ... additional arguments to "print"
 print.csuv<-function(x, ...){
@@ -12,7 +12,7 @@ print.csuv<-function(x, ...){
 }
 
 #' Get the fitted results from Combined Selection and Uncertainty Visualiser (CSUV) method
-#' @export csuv
+#' @exportClass csuv
 #' @import parallel
 #' @import doParallel
 #' @import relaxo
@@ -34,12 +34,14 @@ print.csuv<-function(x, ...){
 #' @param all.fits (optional) all fitted models. If all.fits is provided, then CSUV will use the fitted models in all.fitted instead of fitting using subsampling data
 #' @return a list, which includes estimated coefficients (est.b), subsampling fitted models (mod.collection), number of times a method is selected (method.freq), relative frequency of each covariate (variable.freq), covariates ordered by relative frequency (variable.order).
 #' @examples
+#' \dontrun{
 #' X = matrix(rnorm(1000), nrow = 100)
 #' Y = rowSums(X[,1:3])+rnorm(100)
 #' mod.0 = csuv(X, Y, intercept = FALSE, q = 0, method.names = NULL)
 #' print(mod.0)
 #' mod.5 = csuv(X, Y, intercept = FALSE, q = 5, all.fits = mod.0$all.fits)
 #' print(mod.5)
+#' }
 csuv<-function(X, Y, intercept, method.names = NULL,
               coef.est.method = lm.ols,
               B = 100, q = 0,

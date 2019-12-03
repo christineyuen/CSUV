@@ -79,7 +79,7 @@ lm.lasso.min<-function(X, Y, intercept){
   lasso.mod = glmnet::cv.glmnet(X,Y, intercept=intercept)
 
   # betas
-  est.b = as.numeric(glmnet::coef.cv.glmnet(lasso.mod, s = "lambda.min"))
+  est.b = as.numeric(glmnet::coef.glmnet(lasso.mod, s = "lambda.min"))
   names(est.b[-1]) = colnames(X)
 
   value = list(raw.mod = lasso.mod, est.b = est.b)
@@ -120,7 +120,7 @@ lm.elastic.half<-function(X, Y, intercept){
   lasso.mod = glmnet::cv.glmnet(X,Y, intercept=intercept, alpha = 0.5)
 
   # betas
-  est.b = as.numeric(glmnet::coef.cv.glmnet(lasso.mod, s = "lambda.min"))
+  est.b = as.numeric(glmnet::coef.glmnet(lasso.mod, s = "lambda.min"))
   names(est.b[-1]) = colnames(X)
 
   value = list(raw.mod = lasso.mod, est.b = est.b)

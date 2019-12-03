@@ -4,7 +4,7 @@ Title: Combined Selection and Uncertainty Visualiser (CSUV)
 Version: 0.1.0
 Author: Christine Yuen
 Maintainer: Christine Yuen <yuenl@lse.ac.uk>
-Imports: doParallel, relaxo, caret, futile.logger, glmnet, ncvreg, shiny, shinyjs, DT, plotrix, stats, MASS, datasets, grDevices, utils, graphics, HDCI, parcor, reshape2, ggplot2, dplyr, plyr
+Imports: doParallel, relaxo, caret, futile.logger, glmnet, ncvreg, shiny, shinyjs, DT, plotrix, stats, MASS, datasets, grDevices, utils, graphics, HDCI, parcor, reshape2, ggplot2, dplyr, plyr, shape
 Description: This package implemented CSUV from the paper [TBC]. CSUV aims to perform variable selection and illustrate variable selection uncertainties by combining variable selection results from various methods.
 License: GPL-2
 Encoding: UTF-8
