@@ -12,7 +12,7 @@ print.csuv<-function(x, ...){
 }
 
 #' Get the fitted results from Combined Selection and Uncertainty Visualiser (CSUV) method
-#' @exportClass csuv
+#' @export csuv
 #' @import parallel
 #' @import doParallel
 #' @import relaxo
