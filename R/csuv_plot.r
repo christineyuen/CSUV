@@ -167,10 +167,10 @@ csuv.plot.helper<-function(new.fit,
   # == add threshold ==
   cf = data.frame("type" = c("csuv_m", "csuv_s"), cutoff = c((sum(new.fit$est.b["csuv.m",]!=0)+0.5), (sum(new.fit$est.b["csuv.s",]!=0)+0.5)), dummy = 0)
   if(with.thr){
-    p = p + ggplot2::geom_vline(data = cf, ggplot2::aes(xintercept = cutoff, linetype = type), color = c("blue", "chartreuse2"), size = c(1.5,1))+
+    p = p + ggplot2::geom_vline(data = cf, ggplot2::aes(xintercept = cutoff, linetype = type), color = c(, "chartreuse2", "blue"), size = c(1.5,1))+
       ggplot2::scale_linetype_manual(name = "cutoff",
-                            values = c(csuv_m = "dashed", csuv_s = "solid"),
-                            guide = ggplot2::guide_legend(override.aes = list(color = c("blue", "chartreuse2"),
+                            values = c(csuv_m = "solid", csuv_s = "dashed"),
+                            guide = ggplot2::guide_legend(override.aes = list(color = c("chartreuse2", "blue"),
                                                                               size = c(1.5,1))))
   }
 
