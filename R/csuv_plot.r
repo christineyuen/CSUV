@@ -145,7 +145,7 @@ csuv.plot.helper<-function(new.fit,
                           fun.data = get.cond.boxplot.stat, geom="boxplot", varwidth = TRUE, fill="gold", color = "orangered")
   if(with.unconditional){
     p = p + ggplot2::stat_summary(data = subset(ggplot.df, type == "fit"),
-                         fun.data = get.errorbar.stat, geom="errorbar", col = "brown", lwd = 0.7, alpha = 0.5)+
+                                  fun.data = get.errorbar.stat, geom="errorbar", col = "brown", lwd = 0.7)+
       ggplot2::stat_summary(data = subset(ggplot.df, type == "fit"),
                    fun.data = get.boxplot.stat, geom="boxplot", varwidth = TRUE, fill="palegreen", color = "royalblue", alpha = 0.5)
   }
