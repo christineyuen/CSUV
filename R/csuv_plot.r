@@ -113,7 +113,6 @@ csuv.plot.helper<-function(new.fit,
   }
 
   y.min = min(ggplot.df[,"coefficients"])
-  x.max = length(var.order)
   method.point.col = c(csuv = "red")
   method.point.sty = c(csuv = 16)
   if(!is.null(cv.fit)){
@@ -159,13 +158,13 @@ csuv.plot.helper<-function(new.fit,
   # == add tau and selection frequency text ==
   p = p + ggplot2::geom_text(data = subset(ggplot.df, type == "tau"),
                              ggplot2::aes(y = y.min-1, label = coefficients)) +
-    ggplot2::geom_text(label = "tau", x = x.max+1, y =y.min-1, parse = TRUE, hjust = 1) +
-    ggplot2::coord_cartesian(xlim = c(1, x.max+0.5), clip = "off")
+    ggplot2::geom_text(label = "tau", x = 1, y =y.min-0.75, parse = TRUE, hjust = 0.5, vjust = 0.5) #+
+    # ggplot2::coord_cartesian(xlim = c(1, x.max+0.5), clip = "off")
 
   if(!is.null(compare.method.fit)){
     p = p + ggplot2::geom_text(data = subset(ggplot.df, type == "compare"),
                          ggplot2::aes(y = y.min-1.5, label = coefficients), col = "blue") +
-      ggplot2::geom_text(label = "comparing \n methods", x = x.max+1, y =y.min-1.5, col = "blue", hjust = 1, vjust = 0.5)
+      ggplot2::geom_text(label = "comparing methods", x = 0.6, y =y.min-1.25, col = "blue", hjust = 0, vjust = 0.5)
   }
 
   # == add threshold ==
