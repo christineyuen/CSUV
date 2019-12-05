@@ -15,7 +15,7 @@
 #' @param with.thr whether the selection by the CSUV should be show. Default is TRUE
 #' @param to.shade whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE
 #' @param level the significant level of the whiskers. Default is 0.1
-#' @param var.freq.thr minimum variable frequency to show
+#' @param var.freq.thr minimum variable frequency to show, default is 0.1
 #' @param ... additional argument for plot
 #' @return a ggplot object
 #' @examples
@@ -34,7 +34,7 @@ plot.csuv<-function(x,
                     with.thr = TRUE,
                     to.shade = TRUE,
                     level = 0.1,
-                    var.freq.thr = 0.05, ...){
+                    var.freq.thr = 0.1, ...){
   # plot.new()
   par(new = FALSE)
   return (csuv.plot.helper(new.fit = x,
@@ -56,7 +56,7 @@ csuv.plot.helper<-function(new.fit,
                            print.compare.method.points = FALSE,
                            with.thr = TRUE, to.shade = TRUE,
                            level = 0.1,
-                           var.freq.thr = 0.05, ...){
+                           var.freq.thr = 0.1, ...){
   shiny::req(new.fit)
 
   # get fitted coef, order and frequency

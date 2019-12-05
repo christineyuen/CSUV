@@ -3,7 +3,7 @@ get.plot.var.order<-function(var.order, var.freq, compare.method.fit, cv.fit, va
     return (var.order[1:sum(var.freq>=var.freq.thr)])
   } else{
     cv.sel.i = compare.sel.i = NULL
-    if(!is.null(compare.method.fit)){ compare.sel.i = colSums(compare.method.fit[,-1,drop=FALSE]!=0) }
+    if(!is.null(compare.method.fit)){ compare.sel.i = which(colSums(compare.method.fit[,-1,drop=FALSE]!=0)!=0) }
     if(!is.null(cv.fit)){ cv.sel.i = which(var.freq<var.freq.thr & cv.fit[-1]!=0) }
     low.tau.but.compare.i = intersect(which(var.freq<var.freq.thr), union(compare.sel.i, cv.sel.i))
 
@@ -11,7 +11,7 @@ get.plot.var.order<-function(var.order, var.freq, compare.method.fit, cv.fit, va
       cv.dummy = compare.dummy =rep(0, length(low.tau.but.compare.i))
       if(!is.null(cv.fit)){ cv.dummy = cv.fit[-1][low.tau.but.compare.i] }
       if(!is.null(compare.method.fit)){ compare.dummy = colMeans(compare.method.fit[,-1,drop=FALSE][,low.tau.but.compare.i, drop = FALSE]!=0) }
-      var.order = c(var.order[1:sum(var.freq>=var.freq.thr)], low.tau.but.compare.i[order(-abs(compare.dummy),-abs(cv.dummy))])
+      var.order = c(var.order[1:sum(var.freq>=var.freq.thr)], low.tau.but.compare.i[order(-var.freq[low.tau.but.compare.i], -abs(compare.dummy),-abs(cv.dummy))])
     }
   }
   return (var.order)
