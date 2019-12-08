@@ -48,6 +48,22 @@ plot.csuv<-function(x,
                            var.freq.thr = var.freq.thr, ...))
 }
 
+
+## ------- plot helper functions ---------
+#' Helper function, please do not use it
+#' @export
+#' @param new.fit fitted results from CSUV::csuv()
+#' @param with.unconditional TRUE to get a unconditonal boxplot on the same graph. Default is FALSE
+#' @param compare.method.fit (optional) fitted results from CSUV::lm.compare.methods()
+#' @param compare.method.names (optional) names of method to compare
+#' @param cv.mod (optional) fitted results from cross validation
+#' @param print.compare.method.points Default is FALSE
+#' @param with.thr whether the selection by the CSUV should be show. Default is TRUE
+#' @param to.shade whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE
+#' @param level the significant level of the whiskers. Default is 0.1
+#' @param var.freq.thr minimum variable frequency to show, default is 0.1
+#' @param ... additional argument for plot
+#' @return a ggplot object
 csuv.plot.helper<-function(new.fit,
                            with.unconditional = FALSE,
                            compare.method.fit = NULL,
