@@ -17,7 +17,7 @@ get.plot.var.order<-function(var.order, var.freq, compare.method.fit, cv.fit, va
   return (var.order)
 }
 
-get.df.for.gg.plot<-function(mod, csuv.mod, compare.mod, cv.mod, tau, var.order){
+get.df.for.gg.plot<-function(mod, csuv.mod, compare.mod, cv.mod, tau, var.order, print.compare.method.points){
   # the mod, compare.mod, cv.mod all should have NO intercept
   long.df = reshape2::melt(data = mod,
                            variables.name = "variables",
@@ -35,9 +35,16 @@ get.df.for.gg.plot<-function(mod, csuv.mod, compare.mod, cv.mod, tau, var.order)
   long.df = rbind(long.df, data.frame(variables = var.names,
                                       coefficients = round(tau*100),
                                       type = "tau"))
-  if(!is.null(compare.mod)){ long.df = rbind(long.df, data.frame(variables = var.names,
-                                                                 coefficients = round(colMeans(compare.mod!=0)*100),
-                                                                 type = "compare")) }
+  if(!is.null(compare.mod)){
+    long.df = rbind(long.df, data.frame(variables = var.names, coefficients = round(colMeans(compare.mod!=0)*100), type = "compare"))
+    if(print.compare.method.points){
+      long.compare.df = reshape2::melt(data = compare.mod,
+                                       variables.name = "variables",
+                                       value.name = "coefficients")
+      colnames(long.compare.df)[1:2] = c("type", "variables")
+      long.df = rbind(long.df, long.compare.df[,c("variables","coefficients","type")])
+    }
+  }
   if(!is.null(cv.mod)){ long.df = rbind(long.df, data.frame(variables = var.names,
                                                             coefficients = cv.mod,
                                                             type = "cv")) }

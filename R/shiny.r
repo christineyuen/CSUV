@@ -169,25 +169,20 @@ interactive.uncertainty.illustration<-function(){
                      shiny::h3("Plotting parameters"),
 
                      shiny::radioButtons(inputId = "plotType",
-                                  label = "plot type:",
-                                  choices = c("CI-like plot", "boxplot"),
-                                  selected = "CI-like plot"),
+                                         label = "boxplot type:",
+                                         choices = c("conditonal only", "with unconditional"),
+                                         selected = "conditonal only"),
 
                      shiny::sliderInput(inputId = "q",
                                  label = "q: ",
                                  min = 0,
                                  max = 20,
                                  value = 0),
-
-                     shiny::conditionalPanel(condition = "input.plotType == 'CI-like plot'",
-
-
-                                             shiny::sliderInput(inputId = "level",
-                                                  label = "confidence level: ",
-                                                  min = 50,
-                                                  max = 99.99,
-                                                  value = 90)
-                     )
+                     shiny::sliderInput(inputId = "level",
+                                        label = "confidence level: ",
+                                        min = 50,
+                                        max = 99.99,
+                                        value = 90)
                    ),
                    shiny::mainPanel(
                      shiny::uiOutput(outputId = "data.source.text"),
@@ -600,19 +595,20 @@ interactive.uncertainty.illustration<-function(){
       })
 
       output$new.ci.plot <- shiny::renderPlot({
-        if(input$plotType == "CI-like plot"){
+        if(input$plotType == "conditonal only"){
           suppressWarnings(csuv.plot.helper(new.fit = new.fit.reactive(),
-                                           is.box.plot = FALSE,
+                                           with.unconditional = FALSE,
                                            level = 1-input$level/100, # note the lhs is the significant level x whereas rhs is confidence level x%
                                            print.compare.method.points = TRUE,
                                            compare.method.fit = compare.fit.reactive(),
                                            compare.method.names = compare.method.names)) #
         } else{
           suppressWarnings(csuv.plot.helper(new.fit = new.fit.reactive(),
-                                           is.box.plot = TRUE,
-                                           print.compare.method.points = TRUE,
-                                           compare.method.fit = compare.fit.reactive(),
-                                           compare.method.names = compare.method.names))
+                                            with.unconditional = TRUE,
+                                            level = 1-input$level/100,
+                                            print.compare.method.points = TRUE,
+                                            compare.method.fit = compare.fit.reactive(),
+                                            compare.method.names = compare.method.names))
         }
       })
 

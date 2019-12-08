@@ -41,7 +41,7 @@ plot.csuv<-function(x,
                            with.unconditional = with.unconditional,
                            compare.method.fit = compare.method.fit,
                            compare.method.names = rownames(compare.method.fit),
-                           cv.fit = cv.mod,
+                           cv.mod = cv.mod,
                            print.compare.method.points = FALSE,
                            with.thr = with.thr, to.shade = to.shade,
                            level = level,
@@ -52,33 +52,35 @@ csuv.plot.helper<-function(new.fit,
                            with.unconditional = FALSE,
                            compare.method.fit = NULL,
                            compare.method.names = NULL,
-                           cv.fit = NULL,
+                           cv.mod = NULL,
                            print.compare.method.points = FALSE,
                            with.thr = TRUE, to.shade = TRUE,
                            level = 0.1,
                            var.freq.thr = 0.1, ...){
   shiny::req(new.fit)
 
-  # get fitted coef, order and frequency
   mod = new.fit$mod.collection
   if(is.null(colnames(mod))){ # make sure mod has colnames
     colnames(mod) = paste0("X", 0:(ncol(mod)-1))
   }
-
-  var.freq = new.fit$variable.freq
-  var.order = get.plot.var.order(new.fit$variable.order, var.freq, compare.method.fit, cv.fit, var.freq.thr = var.freq.thr)
-
-  ## get compare mod values (need to calculate here so that we can set the xlim)
+  original.method.names = names(get.compare.methods())
   if(length(compare.method.fit) && is.null(compare.method.names)){
     compare.method.names = rownames(compare.method.fit)
   }
+  compare.method.fit = compare.method.fit[compare.method.names,,drop=FALSE]
+
+
+  ## ======== get the var.order  =======
+  var.freq = new.fit$variable.freq
+  var.order = get.plot.var.order(new.fit$variable.order, var.freq, compare.method.fit, cv.mod, var.freq.thr = var.freq.thr)
 
   ## ======== convert to ggplot df  =======
   ggplot.df = get.df.for.gg.plot(mod = mod[,-1], csuv.mod = new.fit$est.b["csuv.m",-1],
-                                 compare.mod = compare.method.fit[compare.method.names,-1,drop=FALSE],
-                                 cv.mod = cv.fit[-1],
+                                 compare.mod = compare.method.fit[,-1,drop=FALSE],
+                                 cv.mod = cv.mod[-1],
                                  tau = var.freq,
-                                 var.order = var.order)
+                                 var.order = var.order,
+                                 print.compare.method.points = print.compare.method.points)
 
   ## ====== prepare info for plotting =======
   shade.info = get.shade.col.n.lab(var.freq)
@@ -115,9 +117,17 @@ csuv.plot.helper<-function(new.fit,
   y.min = min(ggplot.df[,"coefficients"])
   method.point.col = c(csuv = "red")
   method.point.sty = c(csuv = 16)
-  if(!is.null(cv.fit)){
+  if(!is.null(cv.mod)){
     method.point.col = c(method.point.col, cv = "blue")
     method.point.sty = c(method.point.sty, cv = 1)
+  }
+  if(print.compare.method.points & !is.null(compare.method.fit)){
+    col = rainbow(length(original.method.names)+1)[-1]
+    sty = rep(16, length(original.method.names))
+    names(col) = original.method.names
+    names(sty) = original.method.names
+    method.point.col = c(method.point.col, col)
+    method.point.sty = c(method.point.sty, sty)
   }
   if(with.thr){
     method.point.col = c(method.point.col, csuv_m = "green", csuv_s = "yellow")
