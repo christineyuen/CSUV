@@ -51,7 +51,7 @@ plot.csuv<-function(x,
 
 ## ------- plot helper functions ---------
 #' Helper function, please do not use it
-#' @export
+#' @export csuv.plot.helper
 #' @param new.fit fitted results from CSUV::csuv()
 #' @param with.unconditional TRUE to get a unconditonal boxplot on the same graph. Default is FALSE
 #' @param compare.method.fit (optional) fitted results from CSUV::lm.compare.methods()
