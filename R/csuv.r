@@ -63,6 +63,7 @@ csuv<-function(X, Y, intercept, method.names = NULL,
   return (mod)
 }
 
+
 get.csuv.mod<-function(X, Y, intercept,
                      method.names, coef.est.method,
                      B, q, fit.percent,
@@ -112,6 +113,17 @@ get.csuv.mod<-function(X, Y, intercept,
   return (csuv.result)
 }
 
+#' Helper function, please do not use it
+#' @export get.csuv.unique.fit
+#' @param X covariates (n times p matrix, n: number of entries, p: number of covariates)
+#' @param Y response (vector with n entries)
+#' @param intercept TRUE to fit the data with an intercept, FALSE to fit the data without an intercept
+#' @param method.names vector of method names to be used in CSUV. Choose among "lasso", "elastic", "relaxo", "mcp" and "scad". Default is to use all methods listed above
+#' @param B number of subsampling. Default is 100
+#' @param fit.percent percentage of observations used in fitting in CSUV
+#' @param num.core number of cores to use. Default is 1 (i.e. no parallel running)
+#' @param current.fit (optional) all fitted models
+#' @return current fit
 get.csuv.unique.fit<-function(X, Y, intercept, method.names, B,
                              fit.percent,
                              current.fit = NULL,
