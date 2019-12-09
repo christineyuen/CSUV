@@ -21,6 +21,13 @@ csuv.ci<-function(csuv.fit, level, type = "original"){
   } else if(type == "conditional"){
     mods = csuv.fit$mod.collection[,-1]
     mods[which(mods==0)] = NA
+  } else if(type == "conditional.1"){
+    mods = csuv.fit$mod.collection[,-1]
+    is.pos = colMeans(mods>0)>colMeans(mods<0)
+    is.neg = colMeans(mods>0)<colMeans(mods<0)
+    mods[,is.pos][which(mods[,is.pos]<0)] = NA
+    mods[,is.neg][which(mods[,is.neg]>0)] = NA
+    mods[which(mods==0)] = NA
   }
   p = ncol(mods)
 

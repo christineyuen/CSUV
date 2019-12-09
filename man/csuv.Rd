@@ -4,9 +4,19 @@
 \alias{csuv}
 \title{Get the fitted results from Combined Selection and Uncertainty Visualiser (CSUV) method}
 \usage{
-csuv(X, Y, intercept, method.names = NULL, coef.est.method = lm.ols,
-  B = 100, q = 0, fit.percent = 0.5, selection.criterion = "mse",
-  num.core = 1, all.fits = NULL)
+csuv(
+  X,
+  Y,
+  intercept,
+  method.names = NULL,
+  coef.est.method = lm.ols,
+  B = 100,
+  q = 0,
+  fit.percent = 0.5,
+  selection.criterion = "mse",
+  num.core = 1,
+  all.fits = NULL
+)
 }
 \arguments{
 \item{X}{covariates (n times p matrix, n: number of entries, p: number of covariates)}

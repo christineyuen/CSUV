@@ -4,8 +4,17 @@
 \alias{get.csuv.final.mod}
 \title{Helper function, please do not use it}
 \usage{
-get.csuv.final.mod(X, Y, intercept, unique.fit, selection.criterion,
-  coef.est.method = lm.ols, q, method.names, B)
+get.csuv.final.mod(
+  X,
+  Y,
+  intercept,
+  unique.fit,
+  selection.criterion,
+  coef.est.method = lm.ols,
+  q,
+  method.names,
+  B
+)
 }
 \arguments{
 \item{X}{covariates (n times p matrix, n: number of entries, p: number of covariates)}

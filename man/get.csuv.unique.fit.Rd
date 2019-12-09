@@ -4,8 +4,16 @@
 \alias{get.csuv.unique.fit}
 \title{Helper function, please do not use it}
 \usage{
-get.csuv.unique.fit(X, Y, intercept, method.names, B, fit.percent,
-  current.fit = NULL, num.core = 1)
+get.csuv.unique.fit(
+  X,
+  Y,
+  intercept,
+  method.names,
+  B,
+  fit.percent,
+  current.fit = NULL,
+  num.core = 1
+)
 }
 \arguments{
 \item{X}{covariates (n times p matrix, n: number of entries, p: number of covariates)}

@@ -4,9 +4,18 @@
 \alias{plot.csuv}
 \title{Graphical illustration of selection uncertainty}
 \usage{
-\method{plot}{csuv}(x, with.unconditional = FALSE,
-  compare.method.fit = NULL, cv.mod = NULL, with.thr = TRUE,
-  to.shade = TRUE, level = 0.1, var.freq.thr = 0.1, ...)
+\method{plot}{csuv}(
+  x,
+  with.unconditional = FALSE,
+  compare.method.fit = NULL,
+  cv.mod = NULL,
+  with.thr = TRUE,
+  to.shade = TRUE,
+  ci.method = "conditional",
+  level = 0.1,
+  var.freq.thr = 0.1,
+  ...
+)
 }
 \arguments{
 \item{x}{fitted results from CSUV::csuv()}
@@ -20,6 +29,8 @@
 \item{with.thr}{whether the selection by the CSUV should be show. Default is TRUE}
 
 \item{to.shade}{whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE}
+
+\item{ci.method}{how the confidence interval should be calculated. Default is "conditional"}
 
 \item{level}{the significant level of the whiskers. Default is 0.1}
 

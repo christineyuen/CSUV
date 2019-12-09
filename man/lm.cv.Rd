@@ -4,8 +4,15 @@
 \alias{lm.cv}
 \title{Get a fitted model selected by cross validation}
 \usage{
-lm.cv(X, Y, intercept, fit.percent, num.repeat, method.names = NULL,
-  num.core = 1)
+lm.cv(
+  X,
+  Y,
+  intercept,
+  fit.percent,
+  num.repeat,
+  method.names = NULL,
+  num.core = 1
+)
 }
 \arguments{
 \item{X}{covariates (n times p matrix, n: number of entries, p: number of covariates)}

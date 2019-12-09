@@ -4,8 +4,7 @@
 \alias{get.compare.fit}
 \title{Helper function, please do not use}
 \usage{
-get.compare.fit(x, y, intercept, method.names,
-  current.compare.fit = NULL)
+get.compare.fit(x, y, intercept, method.names, current.compare.fit = NULL)
 }
 \arguments{
 \item{x}{covariates (n times p matrix, n: number of entries, p: number of covariates)}

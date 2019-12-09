@@ -4,11 +4,20 @@
 \alias{csuv.plot.helper}
 \title{Helper function, please do not use it}
 \usage{
-csuv.plot.helper(new.fit, with.unconditional = FALSE,
-  compare.method.fit = NULL, compare.method.names = NULL,
-  cv.mod = NULL, print.compare.method.points = FALSE,
-  with.thr = TRUE, to.shade = TRUE, level = 0.1,
-  var.freq.thr = 0.1, ...)
+csuv.plot.helper(
+  new.fit,
+  with.unconditional = FALSE,
+  compare.method.fit = NULL,
+  compare.method.names = NULL,
+  cv.mod = NULL,
+  print.compare.method.points = FALSE,
+  ci.method = "conditional",
+  with.thr = TRUE,
+  to.shade = TRUE,
+  level = 0.1,
+  var.freq.thr = 0.1,
+  ...
+)
 }
 \arguments{
 \item{new.fit}{fitted results from CSUV::csuv()}
@@ -22,6 +31,8 @@ csuv.plot.helper(new.fit, with.unconditional = FALSE,
 \item{cv.mod}{(optional) fitted results from cross validation}
 
 \item{print.compare.method.points}{Default is FALSE}
+
+\item{ci.method}{how the confidence interval should be calculated. Default is "conditional"}
 
 \item{with.thr}{whether the selection by the CSUV should be show. Default is TRUE}
 

@@ -14,6 +14,7 @@
 #' @param cv.mod (optional) fitted results from cross validation
 #' @param with.thr whether the selection by the CSUV should be show. Default is TRUE
 #' @param to.shade whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE
+#' @param ci.method how the confidence interval should be calculated. Default is "conditional"
 #' @param level the significant level of the whiskers. Default is 0.1
 #' @param var.freq.thr minimum variable frequency to show, default is 0.1
 #' @param ... additional argument for plot
@@ -33,6 +34,7 @@ plot.csuv<-function(x,
                     cv.mod = NULL,
                     with.thr = TRUE,
                     to.shade = TRUE,
+                    ci.method = "conditional",
                     level = 0.1,
                     var.freq.thr = 0.1, ...){
   # plot.new()
@@ -42,6 +44,7 @@ plot.csuv<-function(x,
                            compare.method.fit = compare.method.fit,
                            compare.method.names = rownames(compare.method.fit),
                            cv.mod = cv.mod,
+                           ci.method = ci.method,
                            print.compare.method.points = FALSE,
                            with.thr = with.thr, to.shade = to.shade,
                            level = level,
@@ -60,6 +63,7 @@ plot.csuv<-function(x,
 #' @param print.compare.method.points Default is FALSE
 #' @param with.thr whether the selection by the CSUV should be show. Default is TRUE
 #' @param to.shade whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE
+#' @param ci.method how the confidence interval should be calculated. Default is "conditional"
 #' @param level the significant level of the whiskers. Default is 0.1
 #' @param var.freq.thr minimum variable frequency to show, default is 0.1
 #' @param ... additional argument for plot
@@ -70,6 +74,7 @@ csuv.plot.helper<-function(new.fit,
                            compare.method.names = NULL,
                            cv.mod = NULL,
                            print.compare.method.points = FALSE,
+                           ci.method = "conditional",
                            with.thr = TRUE, to.shade = TRUE,
                            level = 0.1,
                            var.freq.thr = 0.1, ...){
