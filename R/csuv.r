@@ -182,7 +182,7 @@ is.csuv.fit<-function(obj){
 #' @return current fit
 get.csuv.final.mod<-function(X, Y, intercept, unique.fit,
                             selection.criterion,
-                            coef.est.method,
+                            coef.est.method = lm.ols,
                             q, method.names, B){
   # the main function of the new method
   #
