@@ -168,6 +168,18 @@ is.csuv.fit<-function(obj){
   return (class(obj)=="csuv")
 }
 
+#' Helper function, please do not use it
+#' @export get.csuv.final.mod
+#' @param X covariates (n times p matrix, n: number of entries, p: number of covariates)
+#' @param Y response (vector with n entries)
+#' @param intercept TRUE to fit the data with an intercept, FALSE to fit the data without an intercept
+#' @param unique.fit from get.csuv.unique.fit
+#' @param selection.criterion = c("mse", "ebic"). Measure to select fitted models in subsampling dataset. "mse" is mean square error and "ebic" is extended BIC. Default is mse
+#' @param coef.est.method method to estimate the coefficients of covariates after variable selection. User can provide his/her function. Default is ordinary least square
+#' @param q percentile of fitted models used per each subsampling in CSUV, according to the selection criterion on out-of-sample data in ascending order. Default is q = 0 (only the fitted model with the lowest MSE in a subsampling data is used)
+#' @param method.names vector of method names to be used in CSUV. Choose among "lasso", "elastic", "relaxo", "mcp" and "scad". Default is to use all methods listed above
+#' @param B number of subsampling. Default is 100
+#' @return current fit
 get.csuv.final.mod<-function(X, Y, intercept, unique.fit,
                             selection.criterion,
                             coef.est.method,
