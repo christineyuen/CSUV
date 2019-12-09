@@ -70,6 +70,14 @@ lm.cv<-function(X, Y, intercept, fit.percent, num.repeat,
   # return (lm.ols.refit.one(X, Y, intercept, est.b))
 }
 
+#' Helper function, please do not use
+#' @export get.compare.fit
+#' @param x covariates (n times p matrix, n: number of entries, p: number of covariates)
+#' @param y response (vector with n entries)
+#' @param intercept TRUE to fit the data with an intercept, FALSE to fit the data without an intercept
+#' @param method.names vector of method names to be used in cross validation. Choose among "lasso", "elastic", "relaxo", "mcp" and "scad". Default is to use all methods listed above
+#' @param current.compare.fit (optional)
+#' @return a list which includes the estimated coefficients (est.b) and the corresponding ordinary least square fit from stats::lm()
 get.compare.fit<-function(x, y, intercept, method.names, current.compare.fit = NULL){
   if(is.null(method.names)|| method.names == ""){
     return (NULL)
