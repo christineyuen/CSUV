@@ -136,8 +136,8 @@ csuv.plot.helper<-function(new.fit,
   }
 
   y.min = min(ggplot.df[,"coefficients"])
-  method.point.col = c(csuv = "red")
-  method.point.sty = c(csuv = 16)
+  method.point.col = c(csuv_m = "red")
+  method.point.sty = c(csuv_m = 16)
   if(!is.null(cv.mod)){
     method.point.col = c(method.point.col, cv = "blue")
     method.point.sty = c(method.point.sty, cv = 1)
@@ -150,9 +150,9 @@ csuv.plot.helper<-function(new.fit,
     method.point.col = c(method.point.col, col)
     method.point.sty = c(method.point.sty, sty)
   }
-  if(with.thr){
-    method.point.col = c(method.point.col, csuv_m = "green", csuv_s = "yellow")
-  }
+  # if(with.thr){
+  #   method.point.col = c(method.point.col, csuv_m = "green", csuv_s = "yellow")
+  # }
   ## ========= plot ============
   p = ggplot2::ggplot(ggplot.df, ggplot2::aes(x=variables, y =coefficients))
 

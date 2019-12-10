@@ -31,7 +31,7 @@ get.df.for.gg.plot<-function(mod, csuv.mod, compare.mod, cv.mod, tau, var.order,
   var.names = colnames(mod)
   long.df = rbind(long.df, data.frame(variables = var.names,
                                       coefficients = csuv.mod,
-                                      type = "csuv"))
+                                      type = "csuv_m"))
   long.df = rbind(long.df, data.frame(variables = var.names,
                                       coefficients = round(tau*100),
                                       type = "tau"))
