@@ -168,10 +168,15 @@ interactive.uncertainty.illustration<-function(){
 
                      shiny::h3("Plotting parameters"),
 
-                     shiny::radioButtons(inputId = "plotType",
-                                         label = "boxplot type:",
-                                         choices = c("conditonal only", "with unconditional"),
-                                         selected = "conditonal only"),
+                     # shiny::radioButtons(inputId = "plot.type",
+                     #                     label = "boxplot type:",
+                     #                     choices = c("conditonal only", "with unconditional", "with violin"),
+                     #                     selected = "conditonal only"),
+
+                     shiny::checkboxGroupInput(inputId = "plot.type",
+                                               label = "boxplot type:",
+                                               choices = c("with unconditional", "with violin"),
+                                               selected = "", inline = T),
 
                      shiny::sliderInput(inputId = "q",
                                  label = "q: ",
@@ -461,6 +466,7 @@ interactive.uncertainty.illustration<-function(){
                 shiny::showNotification("please select at least one method", type = "error")
                 futile.logger::flog.error("no variable method selected")
                 shiny::updateCheckboxGroupInput(session, inputId = "compare.method.names", selected = "")
+                shiny::updateCheckboxGroupInput(session, inputId = "plot.type", selected = "")
                 return (NULL)
               }
               # req(input$method.names)
@@ -533,13 +539,15 @@ interactive.uncertainty.illustration<-function(){
           # isolate(source("compare_method.r", local = T))
           if(is.null(data.reactive())){
             shiny::showNotification("please upload data", type = "error")
-            shiny::updateCheckboxGroupInput(session, inputId = "compare.method.names", selected = "") # seems will call the first if again
+            shiny::updateCheckboxGroupInput(session, inputId = "compare.method.names", selected = "")
+            shiny::updateCheckboxGroupInput(session, inputId = "plot.type", selected = "")# seems will call the first if again
             futile.logger::flog.error("no data uploaded")
             return (NULL)
           }
           if(is.null(new.fit.reactive())){
             shiny::showNotification("please fit the new method first", type = "error")
-            shiny::updateCheckboxGroupInput(session, inputId = "compare.method.names", selected = "") # seems will call the first if again
+            shiny::updateCheckboxGroupInput(session, inputId = "compare.method.names", selected = "")
+            shiny::updateCheckboxGroupInput(session, inputId = "plot.type", selected = "")# seems will call the first if again
             futile.logger::flog.error("no fitted before comparing")
             return (NULL)
           }
@@ -561,7 +569,7 @@ interactive.uncertainty.illustration<-function(){
         if(!is.null(compare.fit.update.reactive())){
           # validate(need(length(input$compare.method.names)>1 || input$compare.method.names!= "", "No compare method selected"))
           # compare.methods = lapply(shiny::isolate(input$compare.method.names), function(method.name) compare.fit.update.reactive()[[method.name]])
-          compare.methods = lapply(shiny::isolate(input$compare.method.names), function(method.name) compare.fit.update.reactive()[method.name,])
+          compare.methods = lapply(shiny::isolate(input$compare.method.names), function(method.name) compare.fit.update.reactive()[method.name,,drop=FALSE])
           names(compare.methods) = shiny::isolate(input$compare.method.names)
           compare.methods = do.call(rbind, compare.methods)
           return (compare.methods)
@@ -595,21 +603,14 @@ interactive.uncertainty.illustration<-function(){
       })
 
       output$new.ci.plot <- shiny::renderPlot({
-        if(input$plotType == "conditonal only"){
-          suppressWarnings(csuv.plot.helper(new.fit = new.fit.reactive(),
-                                           with.unconditional = FALSE,
-                                           level = 1-input$level/100, # note the lhs is the significant level x whereas rhs is confidence level x%
-                                           print.compare.method.points = TRUE,
-                                           compare.method.fit = compare.fit.reactive(),
-                                           compare.method.names = compare.method.names)) #
-        } else{
-          suppressWarnings(csuv.plot.helper(new.fit = new.fit.reactive(),
-                                            with.unconditional = TRUE,
-                                            level = 1-input$level/100,
-                                            print.compare.method.points = TRUE,
-                                            compare.method.fit = compare.fit.reactive(),
-                                            compare.method.names = compare.method.names))
-        }
+        plot.choice = input$plot.type
+        suppressWarnings(csuv.plot.helper(new.fit = new.fit.reactive(),
+                                          with.unconditional = ("with unconditional" %in% plot.choice),
+                                          with.violin = ("with violin" %in% plot.choice),
+                                          level = 1-input$level/100, # note the lhs is the significant level x whereas rhs is confidence level x%
+                                          print.compare.method.points = TRUE,
+                                          compare.method.fit = compare.fit.reactive(),
+                                          compare.method.names = compare.method.names)) #
       })
 
       output$fit.text <- shiny::renderUI({
