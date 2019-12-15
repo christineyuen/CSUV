@@ -13,6 +13,7 @@ csuv.plot.helper(
   print.compare.method.points = FALSE,
   ci.method = "conditional",
   with.thr = TRUE,
+  with.violin = FALSE,
   to.shade = TRUE,
   level = 0.1,
   var.freq.thr = 0.1,
@@ -35,6 +36,8 @@ csuv.plot.helper(
 \item{ci.method}{how the confidence interval should be calculated. Default is "conditional"}
 
 \item{with.thr}{whether the selection by the CSUV should be show. Default is TRUE}
+
+\item{with.violin}{whether the graph with violin plot}
 
 \item{to.shade}{whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE}
 

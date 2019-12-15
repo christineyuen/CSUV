@@ -10,6 +10,7 @@
   compare.method.fit = NULL,
   cv.mod = NULL,
   with.thr = TRUE,
+  with.violin = FALSE,
   to.shade = TRUE,
   ci.method = "conditional",
   level = 0.1,
@@ -27,6 +28,8 @@
 \item{cv.mod}{(optional) fitted results from cross validation}
 
 \item{with.thr}{whether the selection by the CSUV should be show. Default is TRUE}
+
+\item{with.violin}{whether the graph with violin plot}
 
 \item{to.shade}{whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE}
 
