@@ -189,7 +189,7 @@ csuv.plot.helper<-function(new.fit,
 
   # == add the violin plot ==
   if(with.violin){
-    p = p + ggplot2::geom_violin(data = subset(ggplot.df, type == "fit", coefficients != 0), alpha = 0.5, col = "blue")
+    p = p + ggplot2::geom_violin(data = subset(ggplot.df, type == "fit" & coefficients != 0), alpha = 0.5, col = "blue", scale = "count")
   }
 
   # == add coef estimation points ==
