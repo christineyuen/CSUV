@@ -10,8 +10,8 @@
 #' @export
 #' @param x fitted results from CSUV::csuv()
 #' @param with.unconditional TRUE to get a unconditonal boxplot on the same graph. Default is FALSE
-#' @param compare.method.fit (optional) fitted results from CSUV::lm.compare.methods()
-#' @param cv.mod (optional) fitted results from cross validation
+#' @param compare.method.fit (optional) fitted results from CSUV::lm.compare.methods(). Alternatively, user can provide a data frame with each row contains the estimated coefficients from a method. The name of each row should be corresponding to the name of the method. The first value of each row should be the value of the intercept
+#' @param cv.mod (optional) a vector of estimated coefficients from cross validation. The first value should be the value of the intercept
 #' @param with.thr whether the selection by the CSUV should be show. Default is TRUE
 #' @param with.violin whether the graph with violin plot
 #' @param to.shade whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE
