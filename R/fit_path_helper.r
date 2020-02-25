@@ -8,8 +8,10 @@
 ## ------- Lasso and elastic net --------
 lm.lasso.path.helper <- function(X, Y, intercept, alpha) {
   # the cv.glmnet needs to take at least 2 covariates
-  if (ncol(X) < 2)
-    return(lm.ols(X, Y, intercept))
+  if (ncol(X) < 2){
+    return (list(est.b = rbind(lm.ols(X, Y, intercept)$est.b,
+                               lm.null(X, Y, intercept)$est.b)))
+  }
 
   # set colnames
   if (is.null(colnames(X))) {
@@ -75,6 +77,11 @@ lm.mcp.path <- function(X, Y, intercept) {
 ## ------- relaxo --------
 
 lm.relaxo.path <- function(X, Y, intercept) {
+  if (ncol(X) < 3){
+    return (list(est.b = rbind(lm.ols(X, Y, intercept)$est.b,
+                               lm.null(X, Y, intercept)$est.b)))
+  }
+
   # set colnames
   if (is.null(colnames(X))) {
     colnames(X) <- paste0("X", seq_len(ncol(X)))
@@ -94,7 +101,7 @@ lm.relaxo.path <- function(X, Y, intercept) {
   scaled.X <- scale(X.dropped)
   X.scale <- attr(scaled.X, "scaled:scale")
 
-  relaxo.mod <- relaxo(scaled.X, scaled.Y, warn = FALSE)
+  relaxo.mod <- relaxo(scaled.X, scaled.Y)
   k <- length(relaxo.mod$lambda)
   j <- which(relaxo.mod$lambda[1:(k - 1)] != relaxo.mod$lambda[2:k]) + 1
   j <- c(1, j)

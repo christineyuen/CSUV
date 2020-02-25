@@ -19,6 +19,36 @@ lm.compare.method <- function(X, Y, intercept, method.names = NULL) {
   return(get.compare.fit(X, Y, intercept, method.names, current.compare.fit = NULL))
 }
 
+lm.null <- function(X, Y, intercept) {
+  # return: est.b of length p+1
+  ols.mod <- NULL
+  est.b <- double()
+
+  if (is.null(X) || !ncol(X)) {
+    if (intercept) {
+      ols.mod <- stats::lm(Y ~ 1) # intercept only
+      est.b <- ols.mod$coefficients
+    } else{
+      est.b <- 0
+    }
+  } else{
+    if (is.null(colnames(X))) {
+      colnames(X) <- paste0("X", seq_len(ncol(X)))
+    }
+    d <- data.frame(X, Y)
+    if (intercept) {
+      ols.mod <- stats::lm(Y ~ 1, data = d)
+      est.b <- c(ols.mod$coefficients, rep(0, ncol(X)))
+    } else{
+      ols.mod <- stats::lm(Y ~ 0, data = d)
+      est.b <- rep(0, ncol(X)+1)
+    }
+  }
+  value <- list(raw.mod = ols.mod, est.b = est.b)
+  attr(value, "class") <- "lm.result"
+  return(value)
+}
+
 lm.ols <- function(X, Y, intercept) {
   # return: est.b of length p+1
   ols.mod <- NULL
@@ -144,6 +174,10 @@ lm.mcp <- function(X, Y, intercept) {
 }
 
 lm.relaxo <- function(X, Y, intercept) {
+  # relaxo does not work for < 3 covariates
+  if (ncol(X) < 3)
+    return(lm.ols(X, Y, intercept))
+
   # set colnames
   if (is.null(colnames(X))) colnames(X) <- paste0("X", seq_len(ncol(X)))
 

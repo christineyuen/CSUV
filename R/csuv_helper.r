@@ -288,6 +288,11 @@ get.unique.mod <- function(est.b, mse, is.ols) {
     est.b <- est.b[e.order, ]
     mse <- mse[e.order, ]
   }
+
+  if(is.null(dim(est.b))){
+    return (list(est.b = matrix(est.b, nrow = 1),
+                 mse = mse))
+  }
   non.duplicate.i <- which(!duplicated(est.b != 0))
   result <- list(est.b = est.b[non.duplicate.i, , drop = FALSE],
                  mse = mse[non.duplicate.i])
