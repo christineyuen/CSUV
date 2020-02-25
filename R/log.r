@@ -7,6 +7,6 @@
 #' set.log.level(futile.logger::INFO)
 #' set.log.level(futile.logger::WARN)
 #' }
-set.log.level<-function(level){
+set.log.level <- function(level) {
   futile.logger::flog.threshold(level)
 }

@@ -23,9 +23,9 @@
 
 \item{with.unconditional}{TRUE to get a unconditonal boxplot on the same graph. Default is FALSE}
 
-\item{compare.method.fit}{(optional) fitted results from CSUV::lm.compare.methods()}
+\item{compare.method.fit}{(optional) fitted results from CSUV::lm.compare.methods(). Alternatively, user can provide a data frame with each row contains the estimated coefficients from a method. The name of each row should be corresponding to the name of the method. The first value of each row should be the value of the intercept}
 
-\item{cv.mod}{(optional) fitted results from cross validation}
+\item{cv.mod}{(optional) a vector of estimated coefficients from cross validation. The first value should be the value of the intercept}
 
 \item{with.thr}{whether the selection by the CSUV should be show. Default is TRUE}
 
