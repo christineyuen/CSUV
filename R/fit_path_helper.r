@@ -101,7 +101,7 @@ lm.relaxo.path <- function(X, Y, intercept) {
   scaled.X <- scale(X.dropped)
   X.scale <- attr(scaled.X, "scaled:scale")
 
-  relaxo.mod <- relaxo(scaled.X, scaled.Y)
+  relaxo.mod <- relaxo::relaxo(scaled.X, scaled.Y)
   k <- length(relaxo.mod$lambda)
   j <- which(relaxo.mod$lambda[1:(k - 1)] != relaxo.mod$lambda[2:k]) + 1
   j <- c(1, j)

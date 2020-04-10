@@ -2,22 +2,27 @@
 % Please edit documentation in R/ci_helper.r
 \name{csuv.ci}
 \alias{csuv.ci}
-\title{Graphical illustration of selection uncertainty}
+\title{Confidence interval-like interval for uncertainty illustration}
 \usage{
-csuv.ci(csuv.fit, level, type = "original")
+csuv.ci(csuv.fit, level, type = "original", log.level = NULL)
 }
 \arguments{
 \item{csuv.fit}{fitted results from CSUV::csuv()}
 
 \item{level}{significance level}
 
-\item{type}{todo}
+\item{type}{the type of the interval. When the type is "original", all estimated coefficients are used to calculate the interval. When the type is "conditional", only non-zero estimated coefficients are used. The type "conditional.1" is still in experimental stage, please do not use. Default is "original"}
+
+\item{log.level}{log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details}
+}
+\value{
+a matrix. Each column represents an interval for a corresponding covariate
 }
 \description{
-Graphical illustration of selection uncertainty
+Confidence interval-like interval for uncertainty illustration
 }
 \examples{
-\dontrun{
+\donttest{
 X = matrix(rnorm(1000), nrow = 100)
 Y = rowSums(X[,1:3])+rnorm(100)
 mod.0 = csuv(X, Y, intercept = FALSE, q = 0, method.names = NULL)

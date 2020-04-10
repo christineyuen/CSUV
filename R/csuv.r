@@ -7,6 +7,7 @@ csuv.env <- new.env()
 #' @export
 #' @param x output of csuv()
 #' @param ... additional arguments to "print"
+#' @return return value from print(x$est.b)
 print.csuv <- function(x, ...) {
   print(x$est.b, ...)
 }
@@ -32,9 +33,10 @@ print.csuv <- function(x, ...) {
 #' @param selection.criterion = c("mse", "ebic"). Measure to select fitted models in subsampling dataset. "mse" is mean square error and "ebic" is extended BIC. Default is mse
 #' @param num.core number of cores to use. Default is 1 (i.e. no parallel running)
 #' @param all.fits (optional) all fitted models. If all.fits is provided, then CSUV will use the fitted models in all.fitted instead of fitting using subsampling data
+#' @param log.level log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details
 #' @return a list, which includes estimated coefficients (est.b), subsampling fitted models (mod.collection), number of times a method is selected (method.freq), relative frequency of each covariate (variable.freq), covariates ordered by relative frequency (variable.order).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' X = matrix(rnorm(1000), nrow = 100)
 #' Y = rowSums(X[,1:3])+rnorm(100)
 #' mod.0 = csuv(X, Y, intercept = FALSE, q = 0, method.names = NULL)
@@ -48,8 +50,12 @@ csuv <- function(X, Y, intercept, method.names = NULL,
                  fit.percent = 0.5,
                  selection.criterion = "mse",
                  num.core = 1,
-                 all.fits = NULL) {
+                 all.fits = NULL,
+                 log.level = NULL) {
   # wrapper function of the main algorithm
+  if (!is.null(log.level)){
+    set.log.level(log.level)
+  }
   if (is.null(method.names)) {
     method.names <- names(get.fit.methods())
   }
@@ -118,7 +124,7 @@ get.csuv.mod <- function(X, Y, intercept,
 #' @param fit.percent percentage of observations used in fitting in CSUV
 #' @param num.core number of cores to use. Default is 1 (i.e. no parallel running)
 #' @param current.fit (optional) all fitted models
-#' @return current fit
+#' @return a list of current fit
 get.csuv.unique.fit <- function(X, Y, intercept, method.names, B,
                                 fit.percent,
                                 current.fit = NULL,
@@ -133,7 +139,6 @@ get.csuv.unique.fit <- function(X, Y, intercept, method.names, B,
   #
   # Returns:
   #   a list (methods) of list (flds) of list (unique models (with coefficient), mse)
-
   path.fit.methods <- get.path.fit.methods()
   cv.fit <- cv.for.methods(X, Y, intercept,
                            fit.percent, num.repeat = B,
@@ -174,7 +179,7 @@ is.csuv.fit <- function(obj) {
 #' @param q percentile of fitted models used per each subsampling in CSUV, according to the selection criterion on out-of-sample data in ascending order. Default is q = 0 (only the fitted model with the lowest MSE in a subsampling data is used)
 #' @param method.names vector of method names to be used in CSUV. Choose among "lasso", "elastic", "relaxo", "mcp" and "scad". Default is to use all methods listed above
 #' @param B number of subsampling. Default is 100
-#' @return current fit
+#' @return a list of current fit
 get.csuv.final.mod <- function(X, Y, intercept, unique.fit,
                                selection.criterion,
                                coef.est.method = lm.ols,

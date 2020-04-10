@@ -36,7 +36,7 @@ get.csuv.final.mod(
 \item{B}{number of subsampling. Default is 100}
 }
 \value{
-current fit
+a list of current fit
 }
 \description{
 Helper function, please do not use it

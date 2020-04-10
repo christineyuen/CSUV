@@ -7,13 +7,16 @@
 set.log.level(level)
 }
 \arguments{
-\item{level}{log level}
+\item{level}{log level, setting the level to futile.logger::DEBUG provides most details log, whereas setting the level to futile.logger::WARN provides least details log}
+}
+\value{
+None
 }
 \description{
 Set the level of logger
 }
 \examples{
-\dontrun{
+\donttest{
 set.log.level(futile.logger::DEBUG)
 set.log.level(futile.logger::INFO)
 set.log.level(futile.logger::WARN)

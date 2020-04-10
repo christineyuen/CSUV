@@ -4,13 +4,16 @@
 \alias{interactive.uncertainty.illustration}
 \title{Interactive version of the uncertainty illustration}
 \usage{
-interactive.uncertainty.illustration()
+interactive.uncertainty.illustration(log.level = NULL)
+}
+\arguments{
+\item{log.level}{log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details}
 }
 \description{
 Interactive version of the uncertainty illustration
 }
 \examples{
-\dontrun{
+\donttest{
 interactive.uncertainty.illustration()
 }
 }

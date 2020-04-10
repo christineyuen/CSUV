@@ -11,7 +11,8 @@ lm.cv(
   fit.percent,
   num.repeat,
   method.names = NULL,
-  num.core = 1
+  num.core = 1,
+  log.level = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ lm.cv(
 \item{method.names}{vector of method names to be used in cross validation. Choose among "lasso", "elastic", "relaxo", "mcp" and "scad". Default is to use all methods listed above}
 
 \item{num.core}{number of cores to use. Default is 1 (i.e. no parallel running)}
+
+\item{log.level}{log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details}
 }
 \value{
 a list which includes the estimated coefficients (est.b) and the corresponding ordinary least square fit from stats::lm()
@@ -36,10 +39,9 @@ a list which includes the estimated coefficients (est.b) and the corresponding o
 Get a fitted model selected by cross validation
 }
 \examples{
-\dontrun{
+set.log.level(futile.logger::WARN)
 X = matrix(rnorm(1000), nrow = 100)
 Y = rowSums(X[,1:3])+rnorm(100)
 cv.mod = lm.cv(X, Y, intercept = FALSE, fit.percent = 0.5, num.repeat = 50)
 print(cv.mod$est.b)
-}
 }

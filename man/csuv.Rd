@@ -15,7 +15,8 @@ csuv(
   fit.percent = 0.5,
   selection.criterion = "mse",
   num.core = 1,
-  all.fits = NULL
+  all.fits = NULL,
+  log.level = NULL
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ csuv(
 \item{num.core}{number of cores to use. Default is 1 (i.e. no parallel running)}
 
 \item{all.fits}{(optional) all fitted models. If all.fits is provided, then CSUV will use the fitted models in all.fitted instead of fitting using subsampling data}
+
+\item{log.level}{log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details}
 }
 \value{
 a list, which includes estimated coefficients (est.b), subsampling fitted models (mod.collection), number of times a method is selected (method.freq), relative frequency of each covariate (variable.freq), covariates ordered by relative frequency (variable.order).
@@ -48,7 +51,7 @@ a list, which includes estimated coefficients (est.b), subsampling fitted models
 Get the fitted results from Combined Selection and Uncertainty Visualiser (CSUV) method
 }
 \examples{
-\dontrun{
+\donttest{
 X = matrix(rnorm(1000), nrow = 100)
 Y = rowSums(X[,1:3])+rnorm(100)
 mod.0 = csuv(X, Y, intercept = FALSE, q = 0, method.names = NULL)

@@ -13,11 +13,9 @@ a list of functions
 Get a list of variable selection methods implemented in the CSUV package
 }
 \examples{
-\dontrun{
 X = matrix(rnorm(1000), nrow = 100)
 Y = rowSums(X[,1:3])+rnorm(100)
 lasso.method = get.compare.methods()$lasso
 lasso.mod = lasso.method(X, Y, intercept = FALSE)
 print(lasso.mod$est.b)
-}
 }

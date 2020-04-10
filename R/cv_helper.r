@@ -268,17 +268,17 @@ cv.for.methods <- function(X, Y, intercept,
 
   result <- NULL
   if (num.core > 1) {
-    cl <- makeCluster(min(detectCores() - 1, length(fit.methods), num.core),
+    cl <- parallel::makeCluster(min(parallel::detectCores() - 1, length(fit.methods), num.core),
                       outfile = "parallel_log.txt")
-    clusterExport(cl = cl, list("get.flds.for.methods", "cv.for.one.method"),
+    parallel::clusterExport(cl = cl, list("get.flds.for.methods", "cv.for.one.method"),
                   envir = environment())
-    result <- parLapply(cl, names(fit.methods), function(fit.method.name, param) {
+    result <- parallel::parLapply(cl, names(fit.methods), function(fit.method.name, param) {
       method.flds <- get.flds.for.methods(param$flds, current.fld.length.for.method = length(param$current.fit$unique.mod[[fit.method.name]]))
       return(cv.for.one.method(param$X, param$Y, param$intercept, method.flds, param$fit.methods[[fit.method.name]], param$is.keep.all, progress.percent = NULL))
     }, param = list(X = X, Y = Y, intercept = intercept,
                     flds = flds, current.fit = current.fit,
                     fit.methods = fit.methods, is.keep.all = is.keep.all))
-    stopCluster(cl)
+    parallel::stopCluster(cl)
   } else{
     result <- lapply(names(fit.methods), function(fit.method.name) {
       if (!is.null(csuv.env$is.shiny) && csuv.env$is.shiny) {

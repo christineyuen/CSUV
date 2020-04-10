@@ -18,10 +18,11 @@
 #' @param ci.method how the confidence interval should be calculated. Default is "conditional"
 #' @param level the significant level of the whiskers. Default is 0.1
 #' @param var.freq.thr minimum variable frequency to show, default is 0.1
+#' @param log.level log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details
 #' @param ... additional argument for plot
 #' @return a ggplot object
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' X = matrix(rnorm(1000), nrow = 100)
 #' Y = rowSums(X[,1:3])+rnorm(100)
 #' mod.0 = csuv(X, Y, intercept = FALSE, q = 0, method.names = NULL)
@@ -38,9 +39,14 @@ plot.csuv <- function(x,
                     to.shade = TRUE,
                     ci.method = "conditional",
                     level = 0.1,
-                    var.freq.thr = 0.1, ...) {
+                    var.freq.thr = 0.1,
+                    log.level = NULL,
+                    ...) {
   # plot.new()
-  par(new = FALSE)
+  graphics::par(new = FALSE)
+  if (!is.null(log.level)){
+    set.log.level(log.level)
+  }
   return(csuv.plot.helper(new.fit = x,
                            with.unconditional = with.unconditional,
                            compare.method.fit = compare.method.fit,
@@ -84,8 +90,15 @@ csuv.plot.helper <- function(new.fit,
                              with.violin = FALSE,
                              to.shade = TRUE,
                              level = 0.1,
-                             var.freq.thr = 0.1, ...) {
+                             var.freq.thr = 0.1,
+                             ...) {
   shiny::req(new.fit)
+
+  ## Just to quiet CRAN
+  variables <- NULL
+  type <- NULL
+  coefficients <-NULL
+  cutoff <- NULL
 
   mod <- new.fit$mod.collection
   if (is.null(colnames(mod))) { # make sure mod has colnames
@@ -126,7 +139,7 @@ csuv.plot.helper <- function(new.fit,
     if (is.conditional) cond.x <- x[which(x != 0)]
     if (length(cond.x)) {
       tau <- ifelse(is.conditional, max(mean(x > 0), mean(x < 0)) * 0.8, 0.8)
-      r <- c(quantile(cond.x, probs = c(0.25, 0.25, 0.5, 0.75, 0.75)), tau)
+      r <- c(stats::quantile(cond.x, probs = c(0.25, 0.25, 0.5, 0.75, 0.75)), tau)
     }
     names(r) <- c("ymin", "lower", "middle", "upper", "ymax", "width")
     return(r)
@@ -137,7 +150,7 @@ csuv.plot.helper <- function(new.fit,
     if (is.conditional) cond.x <- x[which(x != 0)]
     if (length(cond.x)) {
       tau <- ifelse(is.conditional, max(mean(x > 0), mean(x < 0)) * 0.8, 0.8)
-      r <- c(quantile(cond.x, probs = c((level / 2), (1 - level / 2))), tau)
+      r <- c(stats::quantile(cond.x, probs = c((level / 2), (1 - level / 2))), tau)
     }
     names(r) <- c("ymin", "ymax", "width")
     return(r)
@@ -151,7 +164,7 @@ csuv.plot.helper <- function(new.fit,
     method.point.sty <- c(method.point.sty, cv = 1)
   }
   if (print.compare.method.points & !is.null(compare.method.fit)) {
-    col <- rainbow(length(original.method.names) + 1)[-1]
+    col <- grDevices::rainbow(length(original.method.names) + 1)[-1]
     sty <- rep(16, length(original.method.names))
     names(col) <- original.method.names
     names(sty) <- original.method.names

@@ -7,13 +7,11 @@
 #' @export get.compare.methods
 #' @return a list of functions
 #' @examples
-#' \dontrun{
 #' X = matrix(rnorm(1000), nrow = 100)
 #' Y = rowSums(X[,1:3])+rnorm(100)
 #' lasso.method = get.compare.methods()$lasso
 #' lasso.mod = lasso.method(X, Y, intercept = FALSE)
 #' print(lasso.mod$est.b)
-#' }
 get.compare.methods <- function() {
   compare.methods <- list(lasso = lm.lasso.min,
                           elastic = lm.elastic.half,
@@ -33,16 +31,20 @@ get.compare.methods <- function() {
 #' @param num.repeat number of sets of subsampling data used in cross validation
 #' @param method.names vector of method names to be used in cross validation. Choose among "lasso", "elastic", "relaxo", "mcp" and "scad". Default is to use all methods listed above
 #' @param num.core number of cores to use. Default is 1 (i.e. no parallel running)
+#' @param log.level log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details
 #' @return a list which includes the estimated coefficients (est.b) and the corresponding ordinary least square fit from stats::lm()
 #' @examples
-#' \dontrun{
+#' set.log.level(futile.logger::WARN)
 #' X = matrix(rnorm(1000), nrow = 100)
 #' Y = rowSums(X[,1:3])+rnorm(100)
 #' cv.mod = lm.cv(X, Y, intercept = FALSE, fit.percent = 0.5, num.repeat = 50)
 #' print(cv.mod$est.b)
-#' }
 lm.cv <- function(X, Y, intercept, fit.percent, num.repeat,
-                  method.names = NULL, num.core = 1) {
+                  method.names = NULL, num.core = 1,
+                  log.level = NULL) {
+  if (!is.null(log.level)){
+    set.log.level(log.level)
+  }
   # the function selects the fitted model by lowest delete-k-cv fit mse
   #
   # Args:
@@ -82,7 +84,7 @@ lm.cv <- function(X, Y, intercept, fit.percent, num.repeat,
 #' @return a list which includes the estimated coefficients (est.b) and the corresponding ordinary least square fit from stats::lm()
 get.compare.fit <- function(x, y, intercept, method.names,
                             current.compare.fit = NULL) {
-  if (is.null(method.names) || method.names == "") {
+  if ( length(method.names) == 0 || (length(method.names) == 1 && method.names == "")) {
     return(NULL)
   }
   futile.logger::flog.info("start fitting compare methods")

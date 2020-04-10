@@ -4,15 +4,17 @@
 #' @param Y response (vector with n entries)
 #' @param intercept TRUE to fit the data with an intercept, FALSE to fit the data without an intercept
 #' @param method.names vector of method names to be used for fitting. Choose among "lasso", "elastic", "relaxo", "mcp" and "scad". Default is to fit the data using all methods listed above
+#' @param log.level log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details
 #' @return estimated coefficients in a form of matrix. Each row corresponds to a method and each column corresponds to a covariate, with the first column corresponds to the intercept
 #' @examples
-#' \dontrun{
 #' X = matrix(rnorm(1000), nrow = 100)
 #' Y = rowSums(X[,1:3])+rnorm(100)
 #' compare.mod = lm.compare.method(X, Y, intercept = FALSE)
 #' print(compare.mod)
-#' }
-lm.compare.method <- function(X, Y, intercept, method.names = NULL) {
+lm.compare.method <- function(X, Y, intercept, method.names = NULL, log.level = NULL) {
+  if (!is.null(log.level)){
+    set.log.level(log.level)
+  }
   if (is.null(method.names)) {
     method.names <- names(get.compare.methods())
   }
@@ -214,22 +216,25 @@ lm.relaxo <- function(X, Y, intercept) {
 }
 
 ## ======== refit =========
-#' Get the ordinary least square estimated coefficients on a set of covariates (previously selected by some method
+#' Get the ordinary least square estimated coefficients on a set of previously selected covariates
 #' @export lm.ols.refit
 #' @param X covariates (n times p matrix, n: number of entries, p: number of covariates)
 #' @param Y response (vector with n entries)
 #' @param intercept TRUE to fit the data with an intercept, FALSE to fit the data without an intercept
 #' @param est.betas estimated betas from previous fitted result. It can be a vector with p+1 entries (first entry as intercept) or a matrix with p+1 columns. Non-zero coefficient means the corresponding covariate is selected
+#' @param log.level log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details
+#' @return a list of estimated coefficients
 #' @examples
-#' \dontrun{
 #' X = matrix(rnorm(1000), nrow = 100)
 #' Y = rowSums(X[,1:3])+rnorm(100)
 #' est.beta = rep(0, 11)
 #' est.beta[2:5] = 1
 #' ols.mod = lm.ols.refit(X, Y, intercept = FALSE, est.betas = est.beta)
 #' print(ols.mod$est.b)
-#' }
-lm.ols.refit <- function(X, Y, intercept, est.betas) {
+lm.ols.refit <- function(X, Y, intercept, est.betas, log.level = NULL) {
+  if (!is.null(log.level)){
+    set.log.level(log.level)
+  }
   if (is.vector(est.betas)) {
     if (ncol(X) != length(est.betas) - 1) {
       stop("wrong number of variables for lm.ols.refit")
@@ -249,8 +254,8 @@ lm.ols.refit.one <- function(X, Y, intercept, est.b) {
   num.var.sel <- sum(est.b[-1] != 0)
   if (num.var.sel < length(Y)) { # because ols can only handle p<n
     if (length(est.b[-1]) != ncol(X)) {
-      print(est.b[-1])
-      print(ncol(X))
+      # print(est.b[-1])
+      # print(ncol(X))
       stop("wrong number of variables for lm.ols.refit.one")
     }
     i <- which(est.b[-1] != 0)
@@ -263,8 +268,7 @@ lm.ols.refit.one <- function(X, Y, intercept, est.b) {
 
     return(list(raw.mod = ols.mod$raw.mod, est.b = est.b))
   } else{
-    print("cannot refit, use the est beta")
-    print(c(num.var.sel, length(Y)))
+    warning(paste0("cannot refit as the number of observations (", length(Y), "is not greater than the number of covariates", num.var.sel, ". Use the est beta instead"))
     return(list(est.b = est.b))
   }
 }
@@ -276,14 +280,17 @@ lm.ols.refit.one <- function(X, Y, intercept, est.b) {
 #' @param Y response (vector with n entries)
 #' @param mod fitted model from lm.cv or csuv. Only provide mod or est.b
 #' @param est.b estimated coefficient (with intercept). Only provide mod or est.b
+#' @param log.level log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details
+#' @return the value of estimated mean square error
 #' @examples
-#' \dontrun{
 #' X = matrix(rnorm(1000), nrow = 100)
 #' Y = rowSums(X[,1:3])+rnorm(100)
 #' compare.mod = lm.compare.method(X, Y, intercept = FALSE)
 #' lm.mse(X, Y, est.b = compare.mod)
-#' }
-lm.mse <- function(X, Y, mod = NULL, est.b = NULL) {
+lm.mse <- function(X, Y, mod = NULL, est.b = NULL, log.level = NULL) {
+  if (!is.null(log.level)){
+    set.log.level(log.level)
+  }
   pred <- lm.predict(X, mod = mod, est.b = est.b)
   if (is.null(mod) == is.null(est.b)) {
     stop("wrong param for function lm.mse")
@@ -329,7 +336,7 @@ cvrelaxo1 <- function(X, Y, K = 5, phi = seq(0, 1, length = 10), max.steps = min
   index <- sample(rep(1:K, each = ceiling(n / K)), n, replace = FALSE)
   losscv <- rep(0, length = length(phi) * (max.steps - 1))
   for (k in 1:K) {
-    rel <- relaxo(X[index != k, ], Y[index != k], phi = phi,
+    rel <- relaxo::relaxo(X[index != k, ], Y[index != k], phi = phi,
                   fast = fast, keep.data = FALSE, warn = FALSE,
                   max.steps = max.steps)
     pred <- X[index == k, ] %*% t(rel$beta)
@@ -337,7 +344,7 @@ cvrelaxo1 <- function(X, Y, K = 5, phi = seq(0, 1, length = 10), max.steps = min
     if (length(losscv) > ncol(pred))
       losscv[(ncol(pred) + 1):length(losscv)] <- Inf
   }
-  relall <- relaxo(X, Y, phi = phi, fast = fast,
+  relall <- relaxo::relaxo(X, Y, phi = phi, fast = fast,
                    keep.data = keep.data, warn = FALSE)
   select <- which.min(losscv[seq_len(nrow(relall$beta))]) # quick fix...
   relall$beta <- relall$beta[select, , drop = FALSE]

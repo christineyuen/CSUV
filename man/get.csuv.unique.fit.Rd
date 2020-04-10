@@ -33,7 +33,7 @@ get.csuv.unique.fit(
 \item{num.core}{number of cores to use. Default is 1 (i.e. no parallel running)}
 }
 \value{
-current fit
+a list of current fit
 }
 \description{
 Helper function, please do not use it

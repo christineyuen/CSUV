@@ -69,7 +69,7 @@ get.shade.col.n.lab <- function(tau) {
   tau.i <- as.numeric(sort(unique(pmin((tau * 100) %/% 10, 9)),
                            decreasing = TRUE))
   tau.factors <- as.factor(c((9:0) * 10))
-  col.rgb <- sapply(tau.i, function(i) rgb(1 - i / 10, 1 - i / 10, 1 - i / 10))
+  col.rgb <- sapply(tau.i, function(i) grDevices::rgb(1 - i / 10, 1 - i / 10, 1 - i / 10))
   col.labels <- sapply(tau.i, function(i)
     ifelse(i == 9, paste0("[", i * 10, ",", (i + 1) * 10, "]"),
            paste0("[", i * 10, ",", (i + 1) * 10, ")")))

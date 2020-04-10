@@ -4,7 +4,7 @@
 \alias{lm.mse}
 \title{Calculate mse}
 \usage{
-lm.mse(X, Y, mod = NULL, est.b = NULL)
+lm.mse(X, Y, mod = NULL, est.b = NULL, log.level = NULL)
 }
 \arguments{
 \item{X}{covariates (n times p matrix, n: number of entries, p: number of covariates)}
@@ -14,15 +14,18 @@ lm.mse(X, Y, mod = NULL, est.b = NULL)
 \item{mod}{fitted model from lm.cv or csuv. Only provide mod or est.b}
 
 \item{est.b}{estimated coefficient (with intercept). Only provide mod or est.b}
+
+\item{log.level}{log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details}
+}
+\value{
+the value of estimated mean square error
 }
 \description{
 Calculate mse
 }
 \examples{
-\dontrun{
 X = matrix(rnorm(1000), nrow = 100)
 Y = rowSums(X[,1:3])+rnorm(100)
 compare.mod = lm.compare.method(X, Y, intercept = FALSE)
 lm.mse(X, Y, est.b = compare.mod)
-}
 }

@@ -4,7 +4,7 @@
 \alias{lm.compare.method}
 \title{Get fitted models by fitting some variable selection methods}
 \usage{
-lm.compare.method(X, Y, intercept, method.names = NULL)
+lm.compare.method(X, Y, intercept, method.names = NULL, log.level = NULL)
 }
 \arguments{
 \item{X}{covariates (n times p matrix, n: number of entries, p: number of covariates)}
@@ -14,6 +14,8 @@ lm.compare.method(X, Y, intercept, method.names = NULL)
 \item{intercept}{TRUE to fit the data with an intercept, FALSE to fit the data without an intercept}
 
 \item{method.names}{vector of method names to be used for fitting. Choose among "lasso", "elastic", "relaxo", "mcp" and "scad". Default is to fit the data using all methods listed above}
+
+\item{log.level}{log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details}
 }
 \value{
 estimated coefficients in a form of matrix. Each row corresponds to a method and each column corresponds to a covariate, with the first column corresponds to the intercept
@@ -22,10 +24,8 @@ estimated coefficients in a form of matrix. Each row corresponds to a method and
 Get fitted models by fitting some variable selection methods
 }
 \examples{
-\dontrun{
 X = matrix(rnorm(1000), nrow = 100)
 Y = rowSums(X[,1:3])+rnorm(100)
 compare.mod = lm.compare.method(X, Y, intercept = FALSE)
 print(compare.mod)
-}
 }

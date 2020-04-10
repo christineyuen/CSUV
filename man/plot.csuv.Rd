@@ -15,6 +15,7 @@
   ci.method = "conditional",
   level = 0.1,
   var.freq.thr = 0.1,
+  log.level = NULL,
   ...
 )
 }
@@ -39,6 +40,8 @@
 
 \item{var.freq.thr}{minimum variable frequency to show, default is 0.1}
 
+\item{log.level}{log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details}
+
 \item{...}{additional argument for plot}
 }
 \value{
@@ -48,7 +51,7 @@ a ggplot object
 Graphical illustration of selection uncertainty
 }
 \examples{
-\dontrun{
+\donttest{
 X = matrix(rnorm(1000), nrow = 100)
 Y = rowSums(X[,1:3])+rnorm(100)
 mod.0 = csuv(X, Y, intercept = FALSE, q = 0, method.names = NULL)

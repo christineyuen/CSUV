@@ -11,6 +11,9 @@
 
 \item{...}{additional arguments to "print"}
 }
+\value{
+return value from print(x$est.b)
+}
 \description{
 Print the coefficients of csuv
 }

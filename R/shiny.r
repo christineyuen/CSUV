@@ -1,10 +1,15 @@
 #' Interactive version of the uncertainty illustration
 #' @export interactive.uncertainty.illustration
+#' @param log.level log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details
+#' @return NULL
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' interactive.uncertainty.illustration()
 #' }
-interactive.uncertainty.illustration <- function() {
+interactive.uncertainty.illustration <- function(log.level = NULL) {
+  if (!is.null(log.level)){
+    set.log.level(log.level)
+  }
   options(shiny.reactlog = TRUE)
     ## ====== Global variables ======
     rv <- shiny::reactiveValues(logger = c())
@@ -20,7 +25,7 @@ interactive.uncertainty.illustration <- function() {
     # ----log ----
     log.to.app <- function(line) {
       cat(line)
-      rv$logger <- c(shiny::isolate(rv$logger), capture.output(cat(line, sep = "")))
+      rv$logger <- c(shiny::isolate(rv$logger), utils::capture.output(cat(line, sep = "")))
     }
     futile.logger::flog.appender(log.to.app)
 
@@ -307,7 +312,7 @@ interactive.uncertainty.illustration <- function() {
         shiny::updateSelectInput(session, "response.name",
                           label = paste("Select input label", length(df.col.names)),
                           choices = df.col.names,
-                          selected = head(df.col.names, 1)
+                          selected = utils::head(df.col.names, 1)
         )
       })
 
@@ -316,19 +321,19 @@ interactive.uncertainty.illustration <- function() {
           shiny::updateSelectInput(session, "object.response.name",
                                    label = paste("Select input label", length(df.col.names)),
                                    choices = df.col.names,
-                                   selected = head(df.col.names, 1)
+                                   selected = utils::head(df.col.names, 1)
           )
       })
 
       # ---- get raw data (for display) ----
       file.raw.data.reactive <- shiny::reactive({
         if (!is.null(input$data.file)) {
-          d <- read.csv(input$data.file$datapath,
-                        header = input$header,
-                        sep = input$sep,
-                        quote = input$quote,
-                        na.strings = input$na.str)
-          d <- d[complete.cases(d), ]
+          d <- utils::read.csv(input$data.file$datapath,
+                               header = input$header,
+                               sep = input$sep,
+                               quote = input$quote,
+                               na.strings = input$na.str)
+          d <- d[stats::complete.cases(d), ]
           return(d)
         }
         return(NULL)
