@@ -34,11 +34,13 @@ get.compare.methods <- function() {
 #' @param log.level log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details
 #' @return a list which includes the estimated coefficients (est.b) and the corresponding ordinary least square fit from stats::lm()
 #' @examples
+#' \donttest{
 #' set.log.level(futile.logger::WARN)
 #' X = matrix(rnorm(1000), nrow = 100)
 #' Y = rowSums(X[,1:3])+rnorm(100)
 #' cv.mod = lm.cv(X, Y, intercept = FALSE, fit.percent = 0.5, num.repeat = 50)
 #' print(cv.mod$est.b)
+#' }
 lm.cv <- function(X, Y, intercept, fit.percent, num.repeat,
                   method.names = NULL, num.core = 1,
                   log.level = NULL) {

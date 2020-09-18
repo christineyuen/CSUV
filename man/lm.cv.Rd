@@ -39,9 +39,11 @@ a list which includes the estimated coefficients (est.b) and the corresponding o
 Get a fitted model selected by cross validation
 }
 \examples{
+\donttest{
 set.log.level(futile.logger::WARN)
 X = matrix(rnorm(1000), nrow = 100)
 Y = rowSums(X[,1:3])+rnorm(100)
 cv.mod = lm.cv(X, Y, intercept = FALSE, fit.percent = 0.5, num.repeat = 50)
 print(cv.mod$est.b)
+}
 }
