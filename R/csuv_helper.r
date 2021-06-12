@@ -3,7 +3,7 @@
 #################################################
 
 ## ====== filtering fitted models =======
-get.best.mod <- function(cv.results, selection.criterion, is.ols,
+get.best.mod <- function(cv.results, selection.criterion, beta.type,
                        q, method.names, B) {
   # a function to get the best k (size) fitted models in folds
   #
@@ -17,11 +17,17 @@ get.best.mod <- function(cv.results, selection.criterion, is.ols,
 
   # change from list (method) of list (fold) of list (est.b/mse) of
   # matrix (path*p+1) to list (fold) of matrix (path*p+1)
+  est.b.name <- 'est.b'
+  mse.name <- 'mse'
+  if (beta.type != '') {
+    est.b.name <- paste0(beta.type, '.est.b')
+    mse.name <-paste0(beta.type, '.mse')
+  }
   est.b <- reshape.cv.result(cv.results$unique.mod,
-                             item.name = ifelse(is.ols, "ols.est.b", "est.b"),
+                             item.name = est.b.name,
                              method.names, B)
   mse <- reshape.cv.result(cv.results$unique.mod,
-                           item.name = ifelse(is.ols, "ols.mse", "mse"),
+                           item.name = mse.name,
                            method.names, B)
 
   # get ebic / bic / mse
@@ -59,7 +65,7 @@ get.best.mod <- function(cv.results, selection.criterion, is.ols,
                                 num.retain))
   return(list(sel.mod = do.call(rbind,
                                  lapply(result, function(x) x$sel.mod)),
-               sel.method.freq <- do.call(rbind,
+               sel.method.freq = do.call(rbind,
                                          lapply(result, function(x)
                                            x$sel.method.freq))))
 }
@@ -116,10 +122,9 @@ get.best.mod.helper.one.fld <- function(method.names, est.b, mse, num.retain) {
   candidate.b <- est.b[which(mse <= mse.thr), , drop = FALSE]
   candidate.e <- mse[which(mse <= mse.thr)]
   last.size <- sum(est.b[e.order[num.retain], ] != 0)
-  sel.method.names <- rownames(candidate.b[which(candidate.e < mse.thr | rowSums(candidate.b != 0) == last.size), , drop = FALSE])
+  sel.method.names <- rownames(candidate.b)
   sel.method.freq <- sapply(method.names, function(method.name)
     sum(sel.method.names == method.name))
-
   return(list(sel.mod = sel.mod, sel.method.freq = sel.method.freq))
 }
 
@@ -133,14 +138,15 @@ csuv.var.sel.freq.n.sol.path <- function(sel.mods.n.sel.freq) {
   # Returns:
   #   a list (variable selection frequency, soluation path)
   sel.mods <- sel.mods.n.sel.freq$sel.mod
-  # sel.freq <- sel.mods.n.sel.freq$sel.method.freq
+  sel.model.freq <- sel.mods.n.sel.freq$sel.method.freq
   var.sel.freq <- sapply(2:ncol(sel.mods), # exclude intercept
                          function(x) max(mean(sel.mods[, x] > 0),
                                           mean(sel.mods[, x] < 0)))
   mean.beta <- abs(colMeans(sel.mods))[-1]# exclude intercept
   var.order <- order(-var.sel.freq, -mean.beta)
   return(list(var.sel.freq = var.sel.freq,
-               var.order = var.order))
+              sel.model.freq = sel.model.freq,
+              var.order = var.order))
 }
 
 ## ====== get the final fitted models after filtering ==========
@@ -234,45 +240,67 @@ csuv.refit <- function(X, Y, intercept, est.i, coef.est.method) {
 }
 
 ## ====== sort and remove duplication ==========
-unique.mod.for.methods <- function(cv.methods.result, is.ols) {
+unique.mod.for.methods <- function(cv.methods.result, beta.type) {
   # a function which removes duplicated models (in terms of selection)
   #
   # Args:
   #   cv.folds.result: cv result of methods with folds
-  #   is.ols: whether the ols or the original fitting result should be used
+  #   beta.type: which type of beta to use (ols, original or all?)
   #   fld.idx: which fld index to use. If omitted, all results will be used
   #
   # Returns:
   #   a list (methods) of list (flds) of list(est.b, mse)
 
   return(lapply(cv.methods.result, function(cv.folds.result)
-    unique.mod.helper.one.method(cv.folds.result, is.ols)))
+    unique.mod.helper.one.method(cv.folds.result, beta.type)))
 }
 
-unique.mod.helper.one.method <- function(cv.flds.result, is.ols) {
+unique.mod.helper.one.method <- function(cv.flds.result, beta.type) {
   # a helper function of "unique.mod.for.methods" which removes duplicated models (in terms of selection)
   #
   # Args:
   #   cv.folds.result: cv result of a method with folds
-  #   is.ols: whether the ols or the original fitting result should be used
+  #   beta.type: which type of beta to use (ols, original or all?)
   #   fld.idx: which fld index to use. If omitted, all results will be used
   #
   # Returns:
   #   a list (flds) of list(est.b, mse)
 
-  est.b.name <- ifelse(is.ols, "ols.est.b", "est.b")
-  mse.name <- ifelse(is.ols, "ols.mse", "mse")
+  get.required.beta.n.mse <- function(cv.fld.result, beta.type) {
+    mse <- est.b <- NULL
+    est.b.name <- mse.name <- NULL
+    if(beta.type == 'all') {
+      ols.result <- get.required.beta.n.mse(cv.fld.result, 'ols')
+      non.ols.result <- get.required.beta.n.mse(cv.fld.result, 'ols')
+      est.b <- rbind(ols.result$est.b, non.ols.result$est.b)
+      mse <- c(ols.result$mse, non.ols.result$mse)
+      est.b.name <- 'all.est.b'
+      mse.name <- 'all.mse'
+    } else {
+      est.b.name <- ifelse(beta.type == 'ols', "ols.est.b", "est.b")
+      mse.name <- ifelse(beta.type == 'ols', "ols.mse", "mse")
+      est.b <- cv.fld.result[[est.b.name]]
+      mse <- cv.fld.result[[mse.name]]
+    }
+    attr(est.b, "name") <- est.b.name
+    attr(mse, "name") <- mse.name
+    return (list(est.b = est.b,
+                 mse = mse))
+  }
 
   return(lapply(cv.flds.result, function(cv.fld.result) {
-    est.b <- cv.fld.result[[est.b.name]]
-    attr(est.b, "name") <- est.b.name
-    mse <- cv.fld.result[[mse.name]]
-    attr(mse, "name") <- mse.name
-    get.unique.mod(est.b = est.b, mse = mse, is.ols = is.ols)
+    beta.n.mse <- get.required.beta.n.mse(cv.fld.result, beta.type)
+    est.b <- beta.n.mse$est.b
+    mse <- beta.n.mse$mse
+    get.unique.mod(est.b = est.b, mse = mse)
     }))
 }
 
-get.unique.mod <- function(est.b, mse, is.ols) {
+get.unique.mod <- function(est.b, mse) {
+  names.to.use <- c(attr(est.b, "name"), attr(mse, "name"))
+  if(is.null(names.to.use)) {
+    names.to.use <- c('est.b', 'mse')
+  }
   # helper function of "unique.mod.helper.one.method", which removes duplicated models (in terms of selection)
   #
   # Args:
@@ -282,25 +310,23 @@ get.unique.mod <- function(est.b, mse, is.ols) {
   # Returns:
   #   a list (est.b, mse)
 
-  # if not ols, sort the est.b so that the one with lowest mse will be selected
-  if (!is.ols) {
-    e.order <- order(mse, rowSums(est.b != 0)) # order by mse, then by model size
-    est.b <- est.b[e.order, ]
-    mse <- mse[e.order, ]
-  }
+  # sort the est.b so that the one with lowest mse will be selected
+  e.order <- order(mse, rowSums(est.b != 0)) # order by mse, then by model size
+  est.b <- est.b[e.order, ]
+  mse <- mse[e.order]
 
   if(is.null(dim(est.b))){
-    return (list(est.b = matrix(est.b, nrow = 1),
-                 mse = mse))
+    result = list(est.b = matrix(est.b, nrow = 1),
+                  mse = mse)
+  } else {
+    non.duplicate.i <- which(!duplicated(est.b != 0))
+    result <- list(est.b = est.b[non.duplicate.i, , drop = FALSE],
+                   mse = mse[non.duplicate.i])
+    if (any(is.na(result$est.b)) || any(is.na(result$mse))) {
+      stop("get.unique.mod: estimated beta or mse cannot be NA")
+    }
   }
-  non.duplicate.i <- which(!duplicated(est.b != 0))
-  result <- list(est.b = est.b[non.duplicate.i, , drop = FALSE],
-                 mse = mse[non.duplicate.i])
-  if (any(is.na(result$est.b)) || any(is.na(result$mse))) {
-    stop("get.unique.mod: estimated beta or mse cannot be NA")
-  }
-  names(result) <- c(attr(est.b, "name"), attr(mse, "name"))
-
+  names(result) <- names.to.use
   return(result)
 }
 

@@ -9,11 +9,12 @@
 #' Graphical illustration of selection uncertainty
 #' @export
 #' @param x fitted results from CSUV::csuv()
-#' @param with.unconditional TRUE to get a unconditonal boxplot on the same graph. Default is FALSE
+#' @param with.conditional TRUE to get a unconditonal boxplot on the same graph. Default is FALSE
+#' @param with.unconditional TRUE to get a unconditonal boxplot on the same graph. Default is TRUE
 #' @param compare.method.fit (optional) fitted results from CSUV::lm.compare.methods(). Alternatively, user can provide a data frame with each row contains the estimated coefficients from a method. The name of each row should be corresponding to the name of the method. The first value of each row should be the value of the intercept
 #' @param cv.mod (optional) a vector of estimated coefficients from cross validation. The first value should be the value of the intercept
 #' @param with.thr whether the selection by the CSUV should be show. Default is TRUE
-#' @param with.violin whether the graph with violin plot
+#' @param with.violin whether the graph with violin plot. Default is FALSE
 #' @param to.shade whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE
 #' @param ci.method how the confidence interval should be calculated. Default is "conditional"
 #' @param level the significant level of the whiskers. Default is 0.1
@@ -31,7 +32,8 @@
 #' plot(mod.0, compare.method.fit = compare.mod, cv.mod = cv.mod$est.b)
 #' }
 plot.csuv <- function(x,
-                    with.unconditional = FALSE,
+                    with.unconditional = TRUE,
+                    with.conditional = TRUE,
                     compare.method.fit = NULL,
                     cv.mod = NULL,
                     with.thr = TRUE,
@@ -48,17 +50,18 @@ plot.csuv <- function(x,
     set.log.level(log.level)
   }
   return(csuv.plot.helper(new.fit = x,
-                           with.unconditional = with.unconditional,
-                           compare.method.fit = compare.method.fit,
-                           compare.method.names = rownames(compare.method.fit),
-                           cv.mod = cv.mod,
-                           ci.method = ci.method,
-                           print.compare.method.points = FALSE,
-                           with.thr = with.thr,
-                           with.violin = with.violin,
-                           to.shade = to.shade,
-                           level = level,
-                           var.freq.thr = var.freq.thr, ...))
+                          with.unconditional = with.unconditional,
+                          with.conditional = with.conditional,
+                          compare.method.fit = compare.method.fit,
+                          compare.method.names = rownames(compare.method.fit),
+                          cv.mod = cv.mod,
+                          ci.method = ci.method,
+                          print.compare.method.points = FALSE,
+                          with.thr = with.thr,
+                          with.violin = with.violin,
+                          to.shade = to.shade,
+                          level = level,
+                          var.freq.thr = var.freq.thr, ...))
 }
 
 
@@ -66,7 +69,8 @@ plot.csuv <- function(x,
 #' Helper function, please do not use it
 #' @export csuv.plot.helper
 #' @param new.fit fitted results from CSUV::csuv()
-#' @param with.unconditional TRUE to get a unconditonal boxplot on the same graph. Default is FALSE
+#' @param with.unconditional TRUE to get a unconditonal boxplot on the same graph. Default is TRUE
+#' @param with.conditional TRUE to get a conditonal boxplot on the same graph. Default is FALSE
 #' @param compare.method.fit (optional) fitted results from CSUV::lm.compare.methods()
 #' @param compare.method.names (optional) names of method to compare
 #' @param cv.mod (optional) fitted results from cross validation
@@ -74,18 +78,19 @@ plot.csuv <- function(x,
 #' @param with.thr whether the selection by the CSUV should be show. Default is TRUE
 #' @param with.violin whether the graph with violin plot
 #' @param to.shade whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE
-#' @param ci.method how the confidence interval should be calculated. Default is "conditional"
+#' @param ci.method how the confidence interval should be calculated. Default is "unconditional"
 #' @param level the significant level of the whiskers. Default is 0.1
 #' @param var.freq.thr minimum variable frequency to show, default is 0.1
 #' @param ... additional argument for plot
 #' @return a ggplot object
 csuv.plot.helper <- function(new.fit,
-                             with.unconditional = FALSE,
+                             with.unconditional = TRUE,
+                             with.conditional = FALSE,
                              compare.method.fit = NULL,
                              compare.method.names = NULL,
                              cv.mod = NULL,
                              print.compare.method.points = FALSE,
-                             ci.method = "conditional",
+                             ci.method = "unconditional",
                              with.thr = TRUE,
                              with.violin = FALSE,
                              to.shade = TRUE,
@@ -190,10 +195,12 @@ csuv.plot.helper <- function(new.fit,
 
 
   # == add the box plot ==
-  p <- p + ggplot2::stat_summary(data = subset(ggplot.df, type == "fit"),
-                                fun.data = get.cond.errorbar.stat, geom = "errorbar", col = "black", lwd = 0.7) +
-    ggplot2::stat_summary(data = subset(ggplot.df, type == "fit"),
-                          fun.data = get.cond.boxplot.stat, geom = "boxplot", varwidth = TRUE, fill = "gold", color = "orangered")
+  if (with.conditional) {
+    p <- p + ggplot2::stat_summary(data = subset(ggplot.df, type == "fit"),
+                                   fun.data = get.cond.errorbar.stat, geom = "errorbar", col = "black", lwd = 0.7) +
+      ggplot2::stat_summary(data = subset(ggplot.df, type == "fit"),
+                            fun.data = get.cond.boxplot.stat, geom = "boxplot", varwidth = TRUE, fill = "gold", color = "orangered")
+  }
   if (with.unconditional) {
     p <- p + ggplot2::stat_summary(data = subset(ggplot.df, type == "fit"),
                                    fun.data = get.errorbar.stat, geom = "errorbar", col = "brown", lwd = 0.7) +

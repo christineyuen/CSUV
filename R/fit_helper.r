@@ -314,8 +314,8 @@ lm.predict <- function(X, mod = NULL, est.b = NULL) {
     return(X %*% est.b[-1] + est.b[1])  # return prediction for only one model
   } else{
     est.b <- as.matrix(est.b)
-    b0 <- matrix(est.b[, 1], nrow = nrow(X), ncol = nrow(est.b), byrow = T)
-    return(X %*% t(est.b[, -1, drop = FALSE]) + b0) # for several models
+    b0 <- matrix(est.b[, 1], nrow = nrow(X), ncol = nrow(est.b), byrow = TRUE)
+    return(as.matrix(X) %*% as.matrix(t(est.b[, -1, drop = FALSE])) + b0) # for several models
   }
 
 }

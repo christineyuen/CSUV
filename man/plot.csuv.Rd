@@ -6,7 +6,8 @@
 \usage{
 \method{plot}{csuv}(
   x,
-  with.unconditional = FALSE,
+  with.unconditional = TRUE,
+  with.conditional = TRUE,
   compare.method.fit = NULL,
   cv.mod = NULL,
   with.thr = TRUE,
@@ -22,7 +23,9 @@
 \arguments{
 \item{x}{fitted results from CSUV::csuv()}
 
-\item{with.unconditional}{TRUE to get a unconditonal boxplot on the same graph. Default is FALSE}
+\item{with.unconditional}{TRUE to get a unconditonal boxplot on the same graph. Default is TRUE}
+
+\item{with.conditional}{TRUE to get a unconditonal boxplot on the same graph. Default is FALSE}
 
 \item{compare.method.fit}{(optional) fitted results from CSUV::lm.compare.methods(). Alternatively, user can provide a data frame with each row contains the estimated coefficients from a method. The name of each row should be corresponding to the name of the method. The first value of each row should be the value of the intercept}
 
@@ -30,7 +33,7 @@
 
 \item{with.thr}{whether the selection by the CSUV should be show. Default is TRUE}
 
-\item{with.violin}{whether the graph with violin plot}
+\item{with.violin}{whether the graph with violin plot. Default is FALSE}
 
 \item{to.shade}{whether to shade the graph by the relative frequency calculated by CSUV. Default is TRUE}
 

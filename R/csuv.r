@@ -28,15 +28,15 @@ print.csuv <- function(x, ...) {
 #' @param method.names vector of method names to be used in CSUV. Choose among "lasso", "elastic", "relaxo", "mcp" and "scad". Default is to use all methods listed above
 #' @param coef.est.method method to estimate the coefficients of covariates after variable selection. User can provide his/her function. Default is ordinary least square
 #' @param B number of subsampling. Default is 100
-#' @param fit.percent percentage of observations used in fitting in CSUV
+#' @param fit.percent percentage of observations used in fitting in CSUV. Default is 0.5
 #' @param q percentile of fitted models used per each subsampling in CSUV, according to the selection criterion on out-of-sample data in ascending order. Default is q = 0 (only the fitted model with the lowest MSE in a subsampling data is used)
-#' @param selection.criterion = c("mse", "ebic"). Measure to select fitted models in subsampling dataset. "mse" is mean square error and "ebic" is extended BIC. Default is mse
+#' @param selection.criterion = c("mse", "ebic"). Measure to select fitted models in subsampling dataset. "mse" is mean square error and "ebic" is extended BIC. Default is "mse"
 #' @param num.core number of cores to use. Default is 1 (i.e. no parallel running)
 #' @param all.fits (optional) all fitted models. If all.fits is provided, then CSUV will use the fitted models in all.fitted instead of fitting using subsampling data
-#' @param log.level log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details
+#' @param log.level log level to set. Default is NULL, which means no change in log level. See https://mlr3book.mlr-org.com/logging.html for more details
 #' @return a list, which includes estimated coefficients (est.b), subsampling fitted models (mod.collection), number of times a method is selected (method.freq), relative frequency of each covariate (variable.freq), covariates ordered by relative frequency (variable.order).
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' X = matrix(rnorm(1000), nrow = 100)
 #' Y = rowSums(X[,1:3])+rnorm(100)
 #' mod.0 = csuv(X, Y, intercept = FALSE, q = 0, method.names = NULL)
@@ -57,7 +57,7 @@ csuv <- function(X, Y, intercept, method.names = NULL,
     set.log.level(log.level)
   }
   if (is.null(method.names)) {
-    method.names <- names(get.fit.methods())
+    method.names <- c("lasso", "elastic", "relaxo", "scad", "mcp")
   }
   mod <- get.csuv.mod(X = X, Y = Y, intercept = intercept,
                       method.names = method.names,
@@ -89,12 +89,12 @@ get.csuv.mod <- function(X, Y, intercept,
   #
   # Returns:
   #   a list (variable selection frequency, solution path)
-  if (is.null(all.fits)) {
+  if(is.null(all.fits) || length(setdiff(method.names, names(all.fits$unique.mod))) || B < length(all.fits$flds)) {
     all.fits <- get.csuv.unique.fit(X = X, Y = Y, intercept = intercept,
                                     method.names = method.names,
                                     B = B,
                                     fit.percent = fit.percent,
-                                    current.fit = NULL,
+                                    current.fit = all.fits,
                                     num.core = num.core)
   }
   csuv.result <- get.csuv.final.mod(X = X, Y = Y, intercept = intercept,
@@ -145,7 +145,7 @@ get.csuv.unique.fit <- function(X, Y, intercept, method.names, B,
                            fit.methods = path.fit.methods[method.names],
                            is.keep.all = FALSE, current.fit = current.fit,
                            num.core = num.core)
-  unique.mod <- unique.mod.for.methods(cv.fit$cv.result, is.ols = TRUE)
+  unique.mod <- unique.mod.for.methods(cv.fit$cv.result, beta.type = 'all')
 
   current.method.names <- union(names(current.fit$unique.mod), names(unique.mod))
   current.mod <- lapply(current.method.names,
@@ -198,7 +198,7 @@ get.csuv.final.mod <- function(X, Y, intercept, unique.fit,
   # filter the models and calculate the variable selection frequency
   sel.mods.n.sel.freq <- get.best.mod(unique.fit,
                                       selection.criterion = selection.criterion,
-                                      is.ols = TRUE, q = q,
+                                      beta.type = 'all', q = q,
                                       method.names = method.names,
                                       B = B)
   var.sel.freq.n.order <- csuv.var.sel.freq.n.sol.path(sel.mods.n.sel.freq)
@@ -219,12 +219,11 @@ get.csuv.final.mod <- function(X, Y, intercept, unique.fit,
   est.b <- rbind(csuv.m = csuv.m,
                 csuv.s = csuv.s,
                 csuv.ebic = csuv.ebic)
-
   colnames(est.b) <- colnames(sel.mods.n.sel.freq$sel.mod)
   colnames(est.b)[1] <- "intercept"
   return(list(est.b = est.b,
                mod.collection = sel.mods.n.sel.freq$sel.mod,
-               method.freq = sel.mods.n.sel.freq$sel.method.freq,
+               method.freq = colMeans(sel.mods.n.sel.freq$sel.method.freq),
                variable.freq = var.sel.freq.n.order$var.sel.freq,
                variable.order = var.sel.freq.n.order$var.order))
 }

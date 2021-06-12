@@ -34,15 +34,15 @@ csuv(
 
 \item{q}{percentile of fitted models used per each subsampling in CSUV, according to the selection criterion on out-of-sample data in ascending order. Default is q = 0 (only the fitted model with the lowest MSE in a subsampling data is used)}
 
-\item{fit.percent}{percentage of observations used in fitting in CSUV}
+\item{fit.percent}{percentage of observations used in fitting in CSUV. Default is 0.5}
 
-\item{selection.criterion}{= c("mse", "ebic"). Measure to select fitted models in subsampling dataset. "mse" is mean square error and "ebic" is extended BIC. Default is mse}
+\item{selection.criterion}{= c("mse", "ebic"). Measure to select fitted models in subsampling dataset. "mse" is mean square error and "ebic" is extended BIC. Default is "mse"}
 
 \item{num.core}{number of cores to use. Default is 1 (i.e. no parallel running)}
 
 \item{all.fits}{(optional) all fitted models. If all.fits is provided, then CSUV will use the fitted models in all.fitted instead of fitting using subsampling data}
 
-\item{log.level}{log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details}
+\item{log.level}{log level to set. Default is NULL, which means no change in log level. See https://mlr3book.mlr-org.com/logging.html for more details}
 }
 \value{
 a list, which includes estimated coefficients (est.b), subsampling fitted models (mod.collection), number of times a method is selected (method.freq), relative frequency of each covariate (variable.freq), covariates ordered by relative frequency (variable.order).
@@ -51,7 +51,7 @@ a list, which includes estimated coefficients (est.b), subsampling fitted models
 Get the fitted results from Combined Selection and Uncertainty Visualiser (CSUV) method
 }
 \examples{
-\donttest{
+\dontrun{
 X = matrix(rnorm(1000), nrow = 100)
 Y = rowSums(X[,1:3])+rnorm(100)
 mod.0 = csuv(X, Y, intercept = FALSE, q = 0, method.names = NULL)

@@ -13,7 +13,7 @@ interactive.uncertainty.illustration(log.level = NULL)
 Interactive version of the uncertainty illustration
 }
 \examples{
-\donttest{
+\dontrun{
 interactive.uncertainty.illustration()
 }
 }

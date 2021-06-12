@@ -127,3 +127,35 @@ lm.relaxo.path <- function(X, Y, intercept) {
 
   return(list(est.b = est.b))
 }
+
+lm.tree.path <- function(X, Y, intercept) {
+  if (is.null(colnames(X))) {
+    colnames(X) <- paste0("X", seq_len(ncol(X)))
+  }
+
+  d <- data.frame(Y, X)
+  if (intercept) {
+    tr <- tree::tree(Y ~ ., d)
+  } else {
+    tr <- tree::tree(Y ~ . + 0, d)
+  }
+  max.s <- summary(tr)$size
+  # set result
+  p <- ncol(X)
+  result <- matrix(0, nrow = max.s, ncol = p+1)
+  colnames(result) <- c('intercept', colnames(X))
+  if (intercept) {
+    result[,'intercept'] = 1
+  }
+
+  for (s in 1:max.s) {
+    tree.summary <- summary(tree::prune.tree(tr, best = s))
+    if ("summary.tree" %in% class(tree.summary)){
+      #i <- sub('X.', '', tree.summary$used)
+      i <- tree.summary$used
+      result[s, i] = 1
+    }
+  }
+
+  return(list(est.b = get.unique.mod(result, rep(0, max.s))$est.b))
+}

@@ -3,7 +3,7 @@
 #' @param log.level log level to set. Default is NULL, which means no change in log level. See the function CSUV::set.log.level for more details
 #' @return NULL
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' interactive.uncertainty.illustration()
 #' }
 interactive.uncertainty.illustration <- function(log.level = NULL) {
@@ -169,12 +169,12 @@ interactive.uncertainty.illustration <- function(log.level = NULL) {
 
                      # shiny::radioButtons(inputId = "plot.type",
                      #                     label = "boxplot type:",
-                     #                     choices = c("conditonal only", "with unconditional", "with violin"),
+                     #                     choices = c("conditonal only", "with conditional", "with violin"),
                      #                     selected = "conditonal only"),
 
                      shiny::checkboxGroupInput(inputId = "plot.type",
                                                label = "boxplot type:",
-                                               choices = c("with unconditional", "with violin"),
+                                               choices = c("with conditional", "with violin"),
                                                selected = "", inline = T),
 
                      shiny::sliderInput(inputId = "q",
@@ -605,7 +605,7 @@ interactive.uncertainty.illustration <- function(log.level = NULL) {
       output$new.ci.plot <- shiny::renderPlot({
         plot.choice <- input$plot.type
         suppressWarnings(csuv.plot.helper(new.fit = new.fit.reactive(),
-                                          with.unconditional = ("with unconditional" %in% plot.choice),
+                                          with.conditional = ("with conditional" %in% plot.choice),
                                           with.violin = ("with violin" %in% plot.choice),
                                           level = 1 - input$level / 100, # note the lhs is the significant level x whereas rhs is confidence level x%
                                           print.compare.method.points = TRUE,

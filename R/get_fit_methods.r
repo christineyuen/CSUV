@@ -12,7 +12,8 @@ get.path.fit.methods <- function() {
                            elastic = lm.elastic.half.path,
                            relaxo = lm.relaxo.path,
                            scad = lm.scad.path,
-                           mcp = lm.mcp.path)
+                           mcp = lm.mcp.path,
+                           tree = lm.tree.path)
   return(fit.methods.helper.add.name(path.fit.methods))
 }
 

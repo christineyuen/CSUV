@@ -6,12 +6,13 @@
 \usage{
 csuv.plot.helper(
   new.fit,
-  with.unconditional = FALSE,
+  with.unconditional = TRUE,
+  with.conditional = FALSE,
   compare.method.fit = NULL,
   compare.method.names = NULL,
   cv.mod = NULL,
   print.compare.method.points = FALSE,
-  ci.method = "conditional",
+  ci.method = "unconditional",
   with.thr = TRUE,
   with.violin = FALSE,
   to.shade = TRUE,
@@ -23,7 +24,9 @@ csuv.plot.helper(
 \arguments{
 \item{new.fit}{fitted results from CSUV::csuv()}
 
-\item{with.unconditional}{TRUE to get a unconditonal boxplot on the same graph. Default is FALSE}
+\item{with.unconditional}{TRUE to get a unconditonal boxplot on the same graph. Default is TRUE}
+
+\item{with.conditional}{TRUE to get a conditonal boxplot on the same graph. Default is FALSE}
 
 \item{compare.method.fit}{(optional) fitted results from CSUV::lm.compare.methods()}
 
@@ -33,7 +36,7 @@ csuv.plot.helper(
 
 \item{print.compare.method.points}{Default is FALSE}
 
-\item{ci.method}{how the confidence interval should be calculated. Default is "conditional"}
+\item{ci.method}{how the confidence interval should be calculated. Default is "unconditional"}
 
 \item{with.thr}{whether the selection by the CSUV should be show. Default is TRUE}
 
