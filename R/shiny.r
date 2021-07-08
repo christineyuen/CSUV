@@ -178,12 +178,12 @@ interactive.uncertainty.illustration <- function(log.level = NULL) {
                                                selected = "", inline = T),
 
                      shiny::sliderInput(inputId = "q",
-                                 label = "q: ",
-                                 min = 0,
-                                 max = 20,
-                                 value = 0),
+                                        label = "q (% of best fitted models to keep): ",
+                                        min = 0,
+                                        max = 20,
+                                        value = 0),
                      shiny::sliderInput(inputId = "level",
-                                        label = "confidence level: ",
+                                        label = "covering range: ",
                                         min = 50,
                                         max = 99.99,
                                         value = 90)
@@ -279,7 +279,7 @@ interactive.uncertainty.illustration <- function(log.level = NULL) {
                               shiny::tags$ul(
                                 shiny::tags$li("Select the type of plot: confidence interval-like plot or boxplot"),
                                 shiny::tags$li('Select "q", which represents the q-th percentile fitted model with the lowest mse used in the new method'),
-                                shiny::tags$li('If confidence interval like plot is chosen, the confidence level can be varied by using the sliding bar under "confidence level"')
+                                shiny::tags$li('If confidence interval like plot is chosen, the covering range can be varied by using the sliding bar under "covering range"')
                               )
                             )
                    )
@@ -607,7 +607,7 @@ interactive.uncertainty.illustration <- function(log.level = NULL) {
         suppressWarnings(csuv.plot.helper(new.fit = new.fit.reactive(),
                                           with.conditional = ("with conditional" %in% plot.choice),
                                           with.violin = ("with violin" %in% plot.choice),
-                                          level = 1 - input$level / 100, # note the lhs is the significant level x whereas rhs is confidence level x%
+                                          level = 1 - input$level / 100, # note the lhs is the significant level x whereas rhs is covering range x%
                                           print.compare.method.points = TRUE,
                                           compare.method.fit = compare.fit.reactive(),
                                           compare.method.names = compare.method.names)) #
