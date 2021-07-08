@@ -144,7 +144,7 @@ interactive.uncertainty.illustration <- function(log.level = NULL) {
                                  label = "B: ",
                                  min = 5,
                                  max = 400,
-                                 value = 50),
+                                 value = 100),
 
                             shiny::actionButton(inputId = "fit.button",
                                   label = "fit")),
